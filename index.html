@@ -4,11 +4,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta charset="utf-8">
 <title>QuizzMatch</title>
-<meta name="description" content="Quiz gratuits : culture générale, foot, cinéma, musique, code de la route, tests de personnalité. Joue, marque des points et défie tes potes.">
+<meta name="description" content="24 quiz gratuits, 3 niveaux, plus de 1 700 questions : culture générale, foot, basket, mangas, cinéma, musique, langues, tests de personnalité. Joue et défie tes amis.">
 <link rel="canonical" href="https://quizzmatch.com/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="QuizzMatch · Quiz gratuits, défie tes potes">
-<meta property="og:description" content="18 quiz, 650+ questions : culture, foot, cinéma, musique, jeux vidéo, tests de personnalité. Joue et défie tes amis.">
+<meta property="og:description" content="24 quiz, 3 niveaux, plus de 1 700 questions : culture, foot, basket, mangas, cinéma, langues, tests de personnalité. Joue et défie tes amis.">
 <meta property="og:url" content="https://quizzmatch.com/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&display=swap">
@@ -48,6 +48,9 @@ body { background: radial-gradient(900px 500px at 85% -10%, rgba(143,124,255,.16
 .board li .p { font-variant-numeric: tabular-nums; }
 .board .note { color: var(--muted); font-size: 14px; margin: 0; }
 .join { display: flex; gap: 8px; } .join input { flex: 1; min-width: 0; } .join .btn { flex: none; padding: 0 20px; }
+.lvtabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.lvtabs button { border: 1px solid var(--line); background: var(--bg); color: var(--muted); border-radius: 12px; padding: 9px 4px; font: 800 13px var(--body); cursor: pointer; }
+.lvtabs button[aria-pressed="true"] { border-color: var(--accent); color: var(--ink); background: var(--soft); }
 .board select { font: inherit; font-weight: 700; padding: 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
 button.pill { cursor: pointer; font-family: inherit; }
 .pill { font-size: 13px; color: var(--muted); font-weight: 800; background: var(--card); border: 1px solid var(--line); padding: 5px 10px; border-radius: 99px; white-space: nowrap; }
@@ -175,7 +178,7 @@ footer button { background: none; border: 0; color: var(--muted); text-decoratio
 </head>
 <body>
 <div class="app" id="app"></div>
-<!--LIENS--><details class="allq"><summary>Toutes les pages · All pages</summary><ul><li><a href="culture/">🧠 Culture générale</a></li><li><a href="histoire/">🏰 Histoire</a></li><li><a href="geo/">🌍 Géographie</a></li><li><a href="sciences/">🔬 Sciences &amp; corps humain</a></li><li><a href="animaux/">🐾 Animaux</a></li><li><a href="vraifaux/">✅ Vrai ou faux</a></li><li><a href="foot/">⚽ Foot</a></li><li><a href="jeux/">🎮 Jeux vidéo</a></li><li><a href="cine/">🎬 Cinéma &amp; séries</a></li><li><a href="emoji/">🍿 Devine le film</a></li><li><a href="musique/">🎧 Musique</a></li><li><a href="lyon/">🦁 Lyon &amp; la France</a></li><li><a href="code/">🚦 Code de la route</a></li><li><a href="cuisine/">🍕 Cuisine du monde</a></li><li><a href="tech/">💻 Tech &amp; internet</a></li><li><a href="anglais/">🇬🇧 Anglais</a></li><li><a href="conducteur/">🚗 Quel conducteur es-tu ?</a></li><li><a href="vacances/">🏝️ Quelles vacances sont faites pour toi ?</a></li><li><a href="en/culture/" hreflang="en">🧠 General knowledge</a></li><li><a href="en/histoire/" hreflang="en">🏰 History</a></li><li><a href="en/geo/" hreflang="en">🌍 Geography</a></li><li><a href="en/sciences/" hreflang="en">🔬 Science &amp; the human body</a></li><li><a href="en/animaux/" hreflang="en">🐾 Animals</a></li><li><a href="en/vraifaux/" hreflang="en">✅ True or false</a></li><li><a href="en/foot/" hreflang="en">⚽ Football</a></li><li><a href="en/jeux/" hreflang="en">🎮 Video games</a></li><li><a href="en/cine/" hreflang="en">🎬 Movies &amp; TV</a></li><li><a href="en/emoji/" hreflang="en">🍿 Guess the movie</a></li><li><a href="en/musique/" hreflang="en">🎧 Music</a></li><li><a href="en/lyon/" hreflang="en">🦁 Lyon &amp; France</a></li><li><a href="en/code/" hreflang="en">🚦 French driving test</a></li><li><a href="en/cuisine/" hreflang="en">🍕 World food</a></li><li><a href="en/tech/" hreflang="en">💻 Tech &amp; internet</a></li><li><a href="en/anglais/" hreflang="en">🇬🇧 French words</a></li><li><a href="en/conducteur/" hreflang="en">🚗 What kind of driver are you?</a></li><li><a href="en/vacances/" hreflang="en">🏝️ Which holiday is made for you?</a></li></ul></details><!--/LIENS-->
+<!--LIENS--><details class="allq"><summary>Toutes les pages · All pages</summary><ul><li><a href="culture/">🧠 Culture générale</a></li><li><a href="histoire/">🏰 Histoire</a></li><li><a href="geo/">🌍 Géographie</a></li><li><a href="sciences/">🔬 Sciences &amp; corps humain</a></li><li><a href="animaux/">🐾 Animaux</a></li><li><a href="vraifaux/">✅ Vrai ou faux</a></li><li><a href="foot/">⚽ Foot</a></li><li><a href="jeux/">🎮 Jeux vidéo</a></li><li><a href="cine/">🎬 Cinéma &amp; séries</a></li><li><a href="emoji/">🍿 Devine le film</a></li><li><a href="musique/">🎧 Musique</a></li><li><a href="lyon/">🦁 Lyon &amp; la France</a></li><li><a href="code/">🚦 Code de la route</a></li><li><a href="cuisine/">🍕 Cuisine du monde</a></li><li><a href="tech/">💻 Tech &amp; internet</a></li><li><a href="anglais/">🇬🇧 Anglais</a></li><li><a href="conducteur/">🚗 Quel conducteur es-tu ?</a></li><li><a href="vacances/">🏝️ Quelles vacances sont faites pour toi ?</a></li><li><a href="basket/">🏀 Basket</a></li><li><a href="mangas/">🍥 Mangas &amp; animés</a></li><li><a href="espagnol/">🇪🇸 Espagnol</a></li><li><a href="heros/">🦸 Quel super-héros es-tu ?</a></li><li><a href="animal/">🦁 Quel animal es-tu ?</a></li><li><a href="metier/">💼 Quel métier est fait pour toi ?</a></li><li><a href="en/culture/" hreflang="en">🧠 General knowledge</a></li><li><a href="en/histoire/" hreflang="en">🏰 History</a></li><li><a href="en/geo/" hreflang="en">🌍 Geography</a></li><li><a href="en/sciences/" hreflang="en">🔬 Science &amp; the human body</a></li><li><a href="en/animaux/" hreflang="en">🐾 Animals</a></li><li><a href="en/vraifaux/" hreflang="en">✅ True or false</a></li><li><a href="en/foot/" hreflang="en">⚽ Football</a></li><li><a href="en/jeux/" hreflang="en">🎮 Video games</a></li><li><a href="en/cine/" hreflang="en">🎬 Movies &amp; TV</a></li><li><a href="en/emoji/" hreflang="en">🍿 Guess the movie</a></li><li><a href="en/musique/" hreflang="en">🎧 Music</a></li><li><a href="en/lyon/" hreflang="en">🦁 Lyon &amp; France</a></li><li><a href="en/code/" hreflang="en">🚦 French driving test</a></li><li><a href="en/cuisine/" hreflang="en">🍕 World food</a></li><li><a href="en/tech/" hreflang="en">💻 Tech &amp; internet</a></li><li><a href="en/anglais/" hreflang="en">🇬🇧 French words</a></li><li><a href="en/conducteur/" hreflang="en">🚗 What kind of driver are you?</a></li><li><a href="en/vacances/" hreflang="en">🏝️ Which holiday is made for you?</a></li><li><a href="en/basket/" hreflang="en">🏀 Basketball</a></li><li><a href="en/mangas/" hreflang="en">🍥 Manga &amp; anime</a></li><li><a href="en/espagnol/" hreflang="en">🇪🇸 Spanish</a></li><li><a href="en/heros/" hreflang="en">🦸 Which superhero are you?</a></li><li><a href="en/animal/" hreflang="en">🦁 Which animal are you?</a></li><li><a href="en/metier/" hreflang="en">💼 Which job is made for you?</a></li></ul></details><!--/LIENS-->
 <canvas id="fx" aria-hidden="true"></canvas>
 
 
@@ -183,6 +186,27 @@ footer button { background: none; border: 0; color: var(--muted); text-decoratio
 <script src="questions-plus.js"></script>
 <script src="questions-en.js"></script>
 <script src="niveaux.js"></script>
+<script src="banque/culture.js"></script>
+<script src="banque/histoire.js"></script>
+<script src="banque/geo.js"></script>
+<script src="banque/sciences.js"></script>
+<script src="banque/animaux.js"></script>
+<script src="banque/vraifaux.js"></script>
+<script src="banque/foot.js"></script>
+<script src="banque/basket.js"></script>
+<script src="banque/jeux.js"></script>
+<script src="banque/cine.js"></script>
+<script src="banque/emoji.js"></script>
+<script src="banque/musique.js"></script>
+<script src="banque/mangas.js"></script>
+<script src="banque/lyon.js"></script>
+<script src="banque/code.js"></script>
+<script src="banque/cuisine.js"></script>
+<script src="banque/tech.js"></script>
+<script src="banque/anglais.js"></script>
+<script src="banque/espagnol.js"></script>
+<script src="banque/tests.js"></script>
+<script src="banque/charge.js"></script>
 <script>
 // Adresse publique du site, utilisée dans les liens de défi (à renseigner une fois le site en ligne)
 const SITE_URL = 'https://quizzmatch.com/';
@@ -194,7 +218,7 @@ const typeOf = q => q.type || 'qcm';
 const LANG = (() => { const u = new URLSearchParams(location.search).get('lang'); if (u === 'en' || u === 'fr') { store.set('lang', u); return u; } return store.get('lang') || (/^fr/i.test(navigator.language || 'fr') ? 'fr' : 'en'); })();
 const L = (fr, en) => LANG === 'en' ? en : fr;
 if (LANG === 'en') { applyEnglish(); document.documentElement.lang = 'en'; document.title = 'QuizzMatch · Free quizzes'; }
-applyLevels();
+applyLevels(); addBank(LANG);
 
 /* ---------- classement (Supabase) ---------- */
 const SB_URL = 'https://ctgjnpxdaqdnrcxjwnkp.supabase.co', SB_KEY = 'sb_publishable_mz--wiLicR1GMDd2b3Fd2g_ewLTbr9h';
@@ -206,41 +230,44 @@ const cleanPseudo = v => { v = String(v || '').replace(/[^\p{L}\p{N} _.-]/gu, ''
 // meilleur score de chaque joueur (un pseudo n'apparaît qu'une fois)
 const bestBy = (rows, key = 'pseudo') => { const m = new Map(); for (const r of rows) if (!m.has(r[key]) || r.points > m.get(r[key]).points) m.set(r[key], r); return [...m.values()].sort((a, b) => b.points - a.points); };
 const rowsHTML = (list, me) => list.length ? `<ol>${list.map((r, i) => `<li class="${r.pseudo === me ? 'me' : ''}"><span class="r">${['🥇', '🥈', '🥉'][i] || i + 1}</span><span class="n">${esc(r.pseudo)}</span><span class="p">${r.points} pts</span></li>`).join('')}</ol>` : `<p class="note">${L('Personne cette semaine. Sois le premier !', 'Nobody yet this week. Be the first!')}</p>`;
-async function quizBoard(k, el) {
-  try { const rows = await sb(`scores?select=pseudo,points&quiz=eq.${k}&created_at=gte.${encodeURIComponent(weekStart())}&order=points.desc&limit=300`);
+// un classement par quiz et par niveau : la colonne « quiz » vaut « geo:d » (les anciens scores sans niveau comptent en Moyen)
+async function quizBoard(k, el, lv) {
+  const ids = [k + ':' + lv].concat(lv === 'm' ? [k] : []).map(x => '"' + x + '"').join(',');
+  try { const rows = await sb(`scores?select=pseudo,points&quiz=in.(${encodeURIComponent(ids)})&created_at=gte.${encodeURIComponent(weekStart())}&order=points.desc&limit=300`);
     el.innerHTML = rowsHTML(bestBy(rows).slice(0, 10), store.get('pseudo')); }
   catch (_) { el.innerHTML = `<p class="note">${L('Classement indisponible pour le moment.', 'Leaderboard unavailable right now.')}</p>`; }
 }
 async function postScore() {
   const me = store.get('pseudo'); if (!me || cur.posted) return; cur.posted = true;
-  try { await sb('scores', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ pseudo: me, quiz: cur.k, points: cur.pts, bonnes: cur.good }) }); } catch (_) {}
+  try { await sb('scores', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ pseudo: me, quiz: cur.k + ':' + cur.lv, points: cur.pts, bonnes: cur.good }) }); } catch (_) {}
 }
 function boardBox() {
   const me = store.get('pseudo');
-  return `<div class="board"><h2>🏆 ${L('Classement de la semaine', 'This week\'s leaderboard')}</h2>
+  return `<div class="board"><h2>🏆 ${L('Classement de la semaine', 'This week\'s leaderboard')}</h2><p class="note"><b>${QUIZ[cur.k].emo} ${esc(QUIZ[cur.k].name)} · ${LV[cur.lv].dot} ${LV[cur.lv].name()}</b></p>
     ${me ? `<p class="note">${L('Tu joues en tant que', 'Playing as')} <b>${esc(me)}</b> · <button type="button" class="linkish" id="chg" style="all:unset;cursor:pointer;color:var(--accent);font-weight:800">${L('changer', 'change')}</button></p>`
          : `<p class="note">${L('Entre ton pseudo plus haut pour apparaître dans le classement.', 'Enter your nickname above to appear on the leaderboard.')}</p>`}
     <div id="lb"><p class="note">${L('Chargement…', 'Loading…')}</p></div>
-    <p class="note">${L('Les niveaux plus difficiles rapportent plus de points.', 'Harder levels score more points.')}</p>
     <button class="btn ghost" type="button" data-go="classement">${L('Voir le classement général', 'See the overall leaderboard')}</button></div>`;
 }
 function wireBoard(onJoin) {
   const j = $('#join'); if (j) j.onclick = () => { const v = cleanPseudo($('#pseudo').value); if (!v) { $('#perr').textContent = L('2 à 16 caractères, sans gros mots.', '2 to 16 characters, no swear words.'); return; } store.set('pseudo', v); store.set('name', v); onJoin(); };
   const c = $('#chg'); if (c) c.onclick = () => { store.set('pseudo', null); store.set('name', null); onJoin(true); };
 }
-async function ranking(sel) {
-  setHash('classement'); showLinks(false); sel = sel || 'tous';
+async function ranking(sel, lv) {
+  setHash('classement'); showLinks(false); sel = sel || 'tous'; lv = LV[lv] ? lv : 'm';
   const me = store.get('pseudo'), opts = KEYS.filter(k => typeOf(QUIZ[k]) !== 'perso');
   app.innerHTML = `${head(`<button class="pill" type="button" data-go="">← ${L('Quiz', 'Quizzes')}</button>`)}
-    <div><h1>🏆 ${L('Classement', 'Leaderboard')}</h1><p class="lead">${L('Remis à zéro chaque lundi.', 'Resets every Monday.')} ${sel === 'tous' ? L('Le total additionne ton meilleur score dans chaque quiz.', 'The total adds up your best score in each quiz.') : L('Ton meilleur score de la semaine.', 'Your best score this week.')}</p></div>
+    <div><h1>🏆 ${L('Classement', 'Leaderboard')}</h1><p class="lead">${L('Remis à zéro chaque lundi.', 'Resets every Monday.')} ${sel === 'tous' ? L('Le total additionne ton meilleur score dans chaque quiz, tous niveaux confondus.', 'The total adds up your best score in each quiz, any level.') : L('Le meilleur score de chaque joueur cette semaine, pour ce niveau.', 'Each player\'s best score this week, at this level.')}</p></div>
     <div class="board"><select id="lsel" aria-label="Quiz"><option value="tous">🌍 ${L('Général (tous les quiz)', 'Overall (all quizzes)')}</option>${opts.map(k => `<option value="${k}" ${k === sel ? 'selected' : ''}>${QUIZ[k].emo} ${esc(QUIZ[k].name)}</option>`).join('')}</select>
+      ${sel === 'tous' ? '' : `<div class="lvtabs" role="group" aria-label="${L('Niveau', 'Level')}">${['f', 'm', 'd'].map(l => `<button type="button" data-rlv="${l}" ${l === lv ? 'aria-pressed="true"' : ''}>${LV[l].dot} ${LV[l].name()}</button>`).join('')}</div>`}
       ${me ? `<p class="note">${L('Tu joues en tant que', 'Playing as')} <b>${esc(me)}</b>.</p>` : `<p class="note">${L('Joue un quiz et choisis un pseudo à la fin pour apparaître ici.', 'Play a quiz and pick a nickname at the end to appear here.')}</p>`}
       <div id="lb"><p class="note">${L('Chargement…', 'Loading…')}</p></div></div>${AD}${FOOT}`;
-  $('#lsel').onchange = e => ranking(e.target.value);
+  $('#lsel').onchange = e => ranking(e.target.value, lv);
+  document.querySelectorAll('[data-rlv]').forEach(b => b.onclick = () => ranking(sel, b.dataset.rlv));
   const lb = $('#lb');
-  if (sel !== 'tous') return quizBoard(sel, lb);
+  if (sel !== 'tous') return quizBoard(sel, lb, lv);
   try { const rows = await sb(`scores?select=pseudo,quiz,points&created_at=gte.${encodeURIComponent(weekStart())}&order=points.desc&limit=5000`);
-    const tot = new Map(); for (const r of bestBy(rows.map(r => ({ ...r, id: r.pseudo + '|' + r.quiz })), 'id')) tot.set(r.pseudo, (tot.get(r.pseudo) || 0) + r.points);
+    const tot = new Map(); for (const r of bestBy(rows.map(r => ({ ...r, id: r.pseudo + '|' + r.quiz.split(':')[0] })), 'id')) tot.set(r.pseudo, (tot.get(r.pseudo) || 0) + r.points);
     lb.innerHTML = rowsHTML([...tot].map(([pseudo, points]) => ({ pseudo, points })).sort((a, b) => b.points - a.points).slice(0, 50), me); }
   catch (_) { lb.innerHTML = `<p class="note">${L('Classement indisponible pour le moment.', 'Leaderboard unavailable right now.')}</p>`; }
 }
@@ -387,8 +414,8 @@ function result() {
     const j = $('#join'); if (j) j.onclick = () => { const v = cleanPseudo($('#pname').value); if (!v) { $('#copied').textContent = L('2 à 16 caractères, sans gros mots.', '2 to 16 characters, no swear words.'); return; } store.set('pseudo', v); store.set('name', v); $('#copied').textContent = ''; refresh(); }; };
   let refresh = () => who();
   if (t !== 'perso') { countUp($('#count'), cur.pts);
-    refresh = edit => { const b = $('.board'); b.outerHTML = boardBox(); wireBoard(refresh); who(); if (!edit) postScore().then(() => quizBoard(cur.k, $('#lb'))); else quizBoard(cur.k, $('#lb')); };
-    wireBoard(refresh); postScore().then(() => quizBoard(cur.k, $('#lb'))); }
+    refresh = edit => { const b = $('.board'); b.outerHTML = boardBox(); wireBoard(refresh); who(); if (!edit) postScore().then(() => quizBoard(cur.k, $('#lb'), cur.lv)); else quizBoard(cur.k, $('#lb'), cur.lv); };
+    wireBoard(refresh); postScore().then(() => quizBoard(cur.k, $('#lb'), cur.lv)); }
   who();
   $('#share').onclick = async () => {
     let nm = store.get('pseudo') || store.get('name');

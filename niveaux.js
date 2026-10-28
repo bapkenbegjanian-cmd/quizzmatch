@@ -1,3 +1,4 @@
+var BANQUE = {}, BANQUE_META = {};   // remplis par les fichiers banque/*.js
 /* Niveau de chaque question, par numéro dans le quiz (même ordre en français et en anglais).
    f = facile, d = difficile ; les autres sont de niveau moyen. */
 const NIVEAUX = {

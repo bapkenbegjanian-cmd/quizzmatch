@@ -3,7 +3,7 @@
    Per quiz: "= name | subtitle", then one line per question:
    multiple choice "question | a | b | c | d | explanation", true/false "statement | explanation",
    personality test "question | a | b | c | d" then "P profile | description". */
-const EN_CATS = { culture: 'Knowledge', sport: 'Sport & games', fun: 'Movies & music', vie: 'Everyday life', perso: 'Personality' };
+const EN_CATS = { culture: 'Knowledge', sport: 'Sport & games', fun: 'Entertainment', vie: 'Everyday life', langues: 'Languages', perso: 'Personality' };
 const EN = {
 culture: `= General knowledge | The great classic
 What is the capital of Australia? | Sydney | Melbourne | Canberra | Perth | Canberra was chosen as a compromise between Sydney and Melbourne.

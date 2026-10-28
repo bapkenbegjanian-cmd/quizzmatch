@@ -4,9 +4,12 @@
 const fs = require('fs'), path = require('path');
 const DIR = path.join(__dirname, '..');
 const SITE = 'https://quizzmatch.com/';
-const load = () => { const src = ['questions.js', 'questions-plus.js', 'questions-en.js'].map(f => fs.readFileSync(path.join(DIR, f), 'utf8')).join('\n');
-  return new Function(src + '\nreturn { QUIZ, CATS, applyEnglish };')(); };
-const FR = load(), EN = load(); EN.applyEnglish();
+// mêmes fichiers et même ordre que dans index.html
+const FILES = ['questions.js', 'questions-plus.js', 'questions-en.js', 'niveaux.js']
+  .concat((fs.readFileSync(path.join(DIR, 'index.html'), 'utf8').match(/banque\/[a-z]+\.js/g) || []));
+const load = lang => new Function(FILES.map(f => fs.readFileSync(path.join(DIR, f), 'utf8')).join('\n') +
+  `\n${lang === 'en' ? 'applyEnglish();' : ''} applyLevels(); addBank('${lang}'); return { QUIZ, CATS };`)();
+const FR = load('fr'), EN = load('en');
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const KEYS = Object.keys(FR.QUIZ);
 

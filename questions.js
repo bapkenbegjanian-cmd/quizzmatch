@@ -3,8 +3,9 @@
 const CATS = [
   { id: 'culture', name: 'Culture', emo: '🧠' },
   { id: 'sport', name: 'Sport & jeux', emo: '🏆' },
-  { id: 'fun', name: 'Ciné & musique', emo: '🎬' },
+  { id: 'fun', name: 'Divertissement', emo: '🎬' },
   { id: 'vie', name: 'Vie pratique', emo: '🧭' },
+  { id: 'langues', name: 'Langues', emo: '🗣️' },
   { id: 'perso', name: 'Personnalité', emo: '✨' },
 ];
 const QUIZ = {
@@ -188,7 +189,7 @@ const QUIZ = {
     ['Quel langage sert à écrire la structure d\'une page web ?', ['HTML', 'Excel', 'Photoshop', 'MP3'], 0, 'Avec le CSS pour le style.'],
     ['De quel pays vient l\'entreprise derrière TikTok ?', ['États-Unis', 'Japon', 'Chine', 'Corée du Sud'], 2, 'ByteDance, une entreprise chinoise.'],
   ]},
-  anglais: { cat: 'vie', emo: '🇬🇧', name: 'Anglais', sub: 'Vocabulaire et faux amis', color: '#1e5aa8', qs: [
+  anglais: { cat: 'langues', emo: '🇬🇧', name: 'Anglais', sub: 'Vocabulaire et faux amis', color: '#1e5aa8', qs: [
     ['Que veut dire « apple » ?', ['Abricot', 'Pomme', 'Ananas', 'Poire'], 1, 'An apple a day…'],
     ['Que veut dire « library » ?', ['Librairie', 'Bibliothèque', 'Liberté', 'Livre'], 1, 'Faux ami : une librairie se dit « bookshop ».'],
     ['Que veut dire « actually » ?', ['Actuellement', 'En fait', 'Activement', 'Bientôt'], 1, 'Faux ami : « actuellement » se dit « currently ».'],
