@@ -224,6 +224,7 @@ footer button { background: none; border: 0; color: var(--muted); text-decoratio
 .allq a { color: var(--muted); }
 </style>
 
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9506500644223987" crossorigin="anonymous"></script>
 </head>
 <body>
 <div class="app" id="app"></div>
@@ -362,7 +363,7 @@ function home() {
   app.innerHTML = `${head()}
     <section class="hero"><h1>${me ? `${L('Salut', 'Hi')} ${esc(me)} 👋` : L('Le quiz qui se joue entre amis', 'The quiz you play with friends')}</h1>
       <p class="lead">${L('Choisis une catégorie, un niveau, puis défie tes amis.', 'Pick a category and a level, then challenge your friends.')}</p></section>
-    <a class="donb" href="${KOFI}" target="_blank" rel="noopener" data-kofi><span>☕</span><span><b>${L('Soutiens QuizzMatch', 'Support QuizzMatch')}</b><small>${L('Gratuit et sans pub grâce à vos dons', 'Free and ad-free thanks to your tips')}</small></span><span class="go">${L('Faire un don', 'Donate')} →</span></a>
+    <a class="donb" href="${KOFI}" target="_blank" rel="noopener" data-kofi><span>☕</span><span><b>${L('Soutiens QuizzMatch', 'Support QuizzMatch')}</b><small>${L('Un petit don aide à garder le site gratuit', 'A small tip helps keep the site free')}</small></span><span class="go">${L('Faire un don', 'Donate')} →</span></a>
     <button class="daily" type="button" data-go="${dk}" style="background:radial-gradient(260px 160px at 100% 0%, ${d.color}55, transparent 70%), linear-gradient(135deg, #2b2150, #17131f)">
       <span class="dl"><small>${L('Quiz du jour', 'Quiz of the day')}</small><b>${d.emo} ${esc(d.name)}</b></span><span class="go">${L('Jouer', 'Play')} →</span></button>
     <button class="duelc" type="button" data-go="duel"><span class="de">⚔️</span><span class="dl"><b>${L('Duel en direct', 'Live duel')}</b><small>${L('Joue en même temps qu\'un ami, chacun sur son téléphone', 'Play at the same time as a friend, each on your own phone')}</small></span><span class="go">→</span></button>
@@ -388,7 +389,7 @@ function profile() {
     <section class="hero"><h1>👤 ${me ? esc(me) : L('Profil', 'Profile')}</h1><p class="lead">${me ? L('Ton pseudo sert pour le classement et tes défis.', 'Your nickname is used for the leaderboard and challenges.') : L('Choisis un pseudo pour apparaître dans le classement. Pas d\'e-mail, pas de mot de passe.', 'Pick a nickname to appear on the leaderboard. No email, no password.')}</p></section>
     <div class="board"><div class="join"><input id="pseudo" maxlength="16" autocomplete="nickname" placeholder="${L('Ton pseudo (ex. Karim)', 'Your nickname (e.g. Sam)')}" value="${esc(me || '')}" aria-label="${L('Ton pseudo', 'Your nickname')}"><button class="btn" type="button" id="savep">${me ? L('Modifier', 'Change') : 'OK'}</button></div><p class="note" id="perr" aria-live="polite"></p></div>
     <div class="stats"><div><b>${played}</b><span>${L('parties jouées', 'games played')}</span></div><div><b>${recs.length}</b><span>${L('quiz avec un record', 'quizzes with a best score')}</span></div></div>
-    <a class="kofi" href="${KOFI}" target="_blank" rel="noopener" data-kofi><span>☕</span><span><b>${L('Soutenir QuizzMatch', 'Support QuizzMatch')}</b><small>${L('Le site est gratuit et sans pub. Un petit don aide à ajouter de nouveaux quiz.', 'The site is free and ad-free. A small tip helps add new quizzes.')}</small></span></a>
+    <a class="kofi" href="${KOFI}" target="_blank" rel="noopener" data-kofi><span>☕</span><span><b>${L('Soutenir QuizzMatch', 'Support QuizzMatch')}</b><small>${L('Le site est gratuit. Un petit don aide à ajouter de nouveaux quiz.', 'The site is free. A small tip helps add new quizzes.')}</small></span></a>
     <section class="sec"><h2>🏆 ${L('Mes records', 'My best scores')}</h2>
       ${recs.length ? `<div class="recs">${recs.map(([k, b]) => `<button type="button" data-go="${k}"><span class="re">${QUIZ[k].emo}</span><span class="rn">${esc(QUIZ[k].name)}</span><span class="rl">${['f', 'm', 'd'].map((l, i) => `<i title="${LV[l].name()}">${LV[l].dot} ${b[i] ?? '–'}</i>`).join('')}</span></button>`).join('')}</div>`
         : `<p class="lead">${L('Joue un quiz pour voir tes records ici.', 'Play a quiz to see your best scores here.')}</p>`}</section>

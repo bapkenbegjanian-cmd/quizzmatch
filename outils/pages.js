@@ -68,6 +68,7 @@ function page(lang, k) {
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,700;6..12,800&display=swap">
 <style>${CSS}</style>
 <script type="application/ld+json">${JSON.stringify(ld)}</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9506500644223987" crossorigin="anonymous"></script>
 </head>
 <body><main>
 <div class="top"><a class="logo" href="${lang === 'en' ? SITE + '?lang=en' : SITE}">Quizz<b>Match</b></a><a href="${url(lang === 'en' ? 'fr' : 'en', k)}">${lang === 'en' ? '🇫🇷 Français' : '🇬🇧 English'}</a></div>
