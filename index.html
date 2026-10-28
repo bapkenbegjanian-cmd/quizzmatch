@@ -188,7 +188,7 @@ function boardBox() {
     <button class="btn ghost" type="button" data-go="classement">${L('Voir le classement général', 'See the overall leaderboard')}</button></div>`;
 }
 function wireBoard(onJoin) {
-  const j = $('#join'); if (j) j.onclick = () => { const v = cleanPseudo($('#pseudo').value); if (!v) { $('#perr').textContent = L('2 à 16 caractères, sans gros mots.', '2 to 16 characters, no swear words.'); return; } store.set('pseudo', v); if (!store.get('name')) store.set('name', v); onJoin(); };
+  const j = $('#join'); if (j) j.onclick = () => { const v = cleanPseudo($('#pseudo').value); if (!v) { $('#perr').textContent = L('2 à 16 caractères, sans gros mots.', '2 to 16 characters, no swear words.'); return; } store.set('pseudo', v); store.set('name', v); onJoin(); };
   const c = $('#chg'); if (c) c.onclick = () => { store.set('pseudo', null); onJoin(true); };
 }
 async function ranking(sel) {
@@ -308,21 +308,30 @@ function result() {
     shareText = cur.rival ? L(`J'ai fait ${cur.pts} points contre ${cur.rival.pts} au quiz « ${q.name} ». À ton tour !`, `I scored ${cur.pts} points against ${cur.rival.pts} in the "${q.name}" quiz. Your turn!`) : L(`J'ai fait ${cur.pts} points (${cur.good}/${n}) au quiz « ${q.name} » sur QuizzMatch. Tu peux faire mieux ? 😏`, `I scored ${cur.pts} points (${cur.good}/${n}) in the "${q.name}" quiz on QuizzMatch. Can you beat that? 😏`);
     if (stars >= 2 || (cur.rival && cur.pts > cur.rival.pts)) setTimeout(() => burst(140), 300);
   }
-  const name = store.get('name') || '';
   app.innerHTML = `${head(`<span class="pill">${q.emo} ${esc(q.name)}</span>`)}
     <div class="result">${body}</div>
     ${t === 'perso' ? '' : boardBox()}
     <div class="share"><h2>⚔️ ${L('Défie tes potes', 'Challenge your friends')}</h2><p class="lead" style="margin:0">${L('Ils jouent le même quiz et voient ton score à battre.', 'They play the same quiz and see the score to beat.')}</p>
-      <label for="pname">${L('Ton prénom', 'Your first name')}</label><input id="pname" maxlength="16" autocomplete="given-name" placeholder="${L('Ex. Karim', 'E.g. Sam')}" value="${esc(name)}">
+      <div id="who"></div>
       <div class="row"><button class="btn gold" type="button" id="share">${L('Envoyer le défi', 'Send the challenge')}</button><button class="btn ghost" type="button" data-go="${cur.k}">${L('Rejouer', 'Play again')}</button></div>
       <div class="copied" id="copied" aria-live="polite"></div></div>
     ${AD}<h2>${L('Continue avec…', 'Keep playing…')}</h2>
     <div class="tiles">${KEYS.filter(k => k !== cur.k).sort(() => Math.random() - .5).slice(0, 4).map((k, i) => { const x = QUIZ[k]; return `<button class="tile" type="button" data-go="${k}" style="animation-delay:${i * 50}ms"><span class="ic" style="${tint(x.color)}">${x.emo}</span><b>${esc(x.name)}</b><small>${esc(x.sub)}</small></button>`; }).join('')}</div>${FOOT}`;
+  // un seul nom pour tout : le pseudo du classement sert aussi pour le défi
+  const who = () => { const me = store.get('pseudo') || store.get('name'); $('#who').innerHTML = me
+      ? `<p class="lead" style="margin:0">${L('Tu défies en tant que', 'Challenging as')} <b>${esc(me)}</b></p>`
+      : `<label for="pname">${L('Ton pseudo', 'Your nickname')}</label><input id="pname" maxlength="16" autocomplete="nickname" placeholder="${L('Ex. Karim', 'E.g. Sam')}">`; };
+  who();
+  let refresh = () => {};
   if (t !== 'perso') { countUp($('#count'), cur.pts);
-    const refresh = edit => { const b = $('.board'); b.outerHTML = boardBox(); wireBoard(refresh); if (!edit) postScore().then(() => quizBoard(cur.k, $('#lb'))); else quizBoard(cur.k, $('#lb')); };
+    refresh = edit => { const b = $('.board'); b.outerHTML = boardBox(); wireBoard(refresh); who(); if (!edit) postScore().then(() => quizBoard(cur.k, $('#lb'))); else quizBoard(cur.k, $('#lb')); };
     wireBoard(refresh); postScore().then(() => quizBoard(cur.k, $('#lb'))); }
   $('#share').onclick = async () => {
-    const nm = ($('#pname').value.trim() || L('Un ami', 'A friend')).slice(0, 16); store.set('name', nm);
+    let nm = store.get('pseudo') || store.get('name');
+    if (!nm) { const raw = $('#pname').value.trim();
+      if (raw) { nm = cleanPseudo(raw); if (!nm) { $('#copied').textContent = L('2 à 16 caractères, sans gros mots.', '2 to 16 characters, no swear words.'); return; }
+        store.set('pseudo', nm); store.set('name', nm); refresh(); }   // devient aussi le pseudo du classement
+      else nm = L('Un ami', 'A friend'); }
     const token = 'defi.' + cur.k + '.' + (t === 'perso' ? 0 : cur.pts) + '.' + (nm.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'Ami') + '.' + cur.seed;
     const url = (SITE_URL || location.origin + location.pathname) + '#' + token, msg = shareText + ' 👉 ' + url;
     try { if (navigator.share) { await navigator.share({ title: 'QuizzMatch', text: shareText, url }); $('#copied').textContent = L('Défi envoyé ✅', 'Challenge sent ✅'); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
