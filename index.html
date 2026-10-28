@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta charset="utf-8">
+<title>QuizzMatch</title>
+<meta name="description" content="Quiz gratuits : culture générale, foot, cinéma, musique, code de la route, tests de personnalité. Joue, marque des points et défie tes potes.">
+<link rel="canonical" href="https://quizzmatch.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="QuizzMatch · Quiz gratuits, défie tes potes">
+<meta property="og:description" content="18 quiz, 650+ questions : culture, foot, cinéma, musique, jeux vidéo, tests de personnalité. Joue et défie tes amis.">
+<meta property="og:url" content="https://quizzmatch.com/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&display=swap">
+<style>
+/* Mise en page : une colonne façon appli mobile. Accueil (quiz du jour, catégories, tuiles) → question plein écran → résultat + défi */
+:root {
+  --bg: #f3f1fb; --card: #ffffff; --ink: #1d1838; --muted: #6a6585; --line: #e1ddf0;
+  --accent: #5b3df5; --accent-ink: #ffffff; --good: #138a54; --bad: #d23b3b; --soft: #ebe6ff; --ad: #f7f6fb; --gold: #e0a100;
+  --display: "Bricolage Grotesque", "Arial Black", sans-serif; --body: "Nunito Sans", system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #120f24; --card: #1c1834; --ink: #efeefb; --muted: #a7a2c4; --line: #2f2a4d; --accent: #8a74ff; --accent-ink: #120f24; --good: #3fcf8e; --bad: #ff6b6b; --soft: #2a2350; --ad: #17142b; --gold: #ffc53d; color-scheme: dark } }
+:root[data-theme="dark"] { --bg: #120f24; --card: #1c1834; --ink: #efeefb; --muted: #a7a2c4; --line: #2f2a4d; --accent: #8a74ff; --accent-ink: #120f24; --good: #3fcf8e; --bad: #ff6b6b; --soft: #2a2350; --ad: #17142b; --gold: #ffc53d; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font: 16px/1.5 var(--body); margin: 0; }
+[hidden] { display: none !important; }
+.app { max-width: 680px; margin: 0 auto; padding-block: 18px 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 18px; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.logo { font: 800 30px/1 var(--display); letter-spacing: -.03em; color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+.logo .q { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--accent); color: var(--accent-ink); font-size: 22px; transform: rotate(-8deg); animation: wob 3s ease-in-out infinite; }
+.logo > span:last-child { color: var(--ink); } .logo > span:last-child span { color: var(--accent); }
+.top > .pill { flex-shrink: 0; }
+@media (max-width: 400px) { .logo { font-size: 23px; gap: 6px; } .logo .q { width: 28px; height: 28px; font-size: 18px; } }
+@keyframes wob { 50% { transform: rotate(8deg) } }
+.board { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 18px; display: grid; gap: 10px; }
+.board h2 { margin: 0; }
+.board ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.board li { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: var(--bg); font-weight: 700; }
+.board li.me { background: color-mix(in srgb, var(--accent) 16%, var(--card)); outline: 2px solid var(--accent); }
+.board li .r { width: 28px; text-align: center; font-weight: 900; color: var(--muted); }
+.board li .n { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.board li .p { font-variant-numeric: tabular-nums; }
+.board .note { color: var(--muted); font-size: 14px; margin: 0; }
+.board .join { display: flex; gap: 8px; } .board .join input { flex: 1; min-width: 0; }
+.board select { font: inherit; font-weight: 700; padding: 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+button.pill { cursor: pointer; font-family: inherit; }
+.pill { font-size: 13px; color: var(--muted); font-weight: 800; background: var(--card); border: 1px solid var(--line); padding: 5px 10px; border-radius: 99px; white-space: nowrap; }
+h1 { font: 800 clamp(28px, 7vw, 40px)/1.02 var(--display); margin: 0; text-wrap: balance; letter-spacing: -.02em; }
+h2 { font: 800 22px/1.1 var(--display); margin: 0; letter-spacing: -.01em; }
+.lead { color: var(--muted); margin: 6px 0 0; }
+/* quiz du jour */
+.daily { position: relative; overflow: hidden; border-radius: 22px; padding: 20px; color: #fff; display: grid; gap: 8px; cursor: pointer; border: 0; text-align: left; font: inherit; }
+.daily::after { content: ""; position: absolute; inset: -40% -20% auto auto; width: 220px; height: 220px; border-radius: 50%; background: rgba(255,255,255,.14); }
+.daily small { font-weight: 800; letter-spacing: .1em; text-transform: uppercase; font-size: 11px; opacity: .9; }
+.daily b { font: 800 26px/1.05 var(--display); }
+.daily .go { justify-self: start; background: #fff; color: #1d1838; font-weight: 800; border-radius: 99px; padding: 8px 14px; font-size: 14px; margin-top: 4px; }
+/* catégories */
+.cats { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+.cats::-webkit-scrollbar { display: none; }
+.cat { flex: none; border: 2px solid var(--line); background: var(--card); color: var(--ink); border-radius: 99px; padding: 8px 14px; font: 800 14px var(--body); cursor: pointer; }
+.cat[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 400px) { .tiles { grid-template-columns: 1fr } }
+.tile { position: relative; overflow: hidden; text-align: left; border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 18px; padding: 16px; cursor: pointer; display: grid; gap: 4px; font: inherit; animation: rise .45s cubic-bezier(.2,.8,.2,1) both; transition: transform .15s; }
+@media (hover: hover) { .tile:hover { transform: translateY(-3px); } }
+.tile:active { transform: scale(.97); }
+.tile .ic { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; font-size: 26px; margin-bottom: 6px; }
+.tile b { font: 800 18px/1.1 var(--display); }
+.tile small { color: var(--muted); }
+.tile .best { font-size: 12px; font-weight: 800; color: var(--gold); }
+.tile .tag { position: absolute; top: 12px; right: 12px; font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+@keyframes rise { from { opacity: 0; transform: translateY(14px) } }
+.ad { border: 1px dashed var(--line); background: var(--ad); color: var(--muted); border-radius: 14px; min-height: 100px; display: grid; place-items: center; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+/* défi reçu */
+.challenge { background: var(--card); border: 2px solid var(--gold); border-radius: 22px; padding: 20px; display: grid; gap: 10px; text-align: center; animation: pop .5s cubic-bezier(.2,1.4,.4,1) both; }
+.challenge .vs { font-size: 46px; line-height: 1; }
+@keyframes pop { from { opacity: 0; transform: scale(.85) } }
+/* question */
+.qtop { display: flex; align-items: center; gap: 12px; }
+.bar { flex: 1; height: 10px; background: var(--soft); border-radius: 99px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .4s; border-radius: 99px; }
+.pts { font: 800 16px var(--display); font-variant-numeric: tabular-nums; min-width: 72px; text-align: right; }
+.timer { height: 6px; background: var(--soft); border-radius: 99px; overflow: hidden; }
+.timer i { display: block; height: 100%; width: 100%; background: var(--good); transform-origin: left; }
+.timer.run i { animation: drain var(--t) linear forwards; }
+@keyframes drain { to { transform: scaleX(0); background: var(--bad) } }
+.qcard { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 22px 18px; display: grid; gap: 6px; animation: rise .35s both; }
+.qnum { font-size: 13px; font-weight: 800; color: var(--muted); }
+.qtext { font: 800 clamp(21px, 5.4vw, 27px)/1.18 var(--display); margin: 0; text-wrap: balance; }
+.qtext.emoji { font-size: clamp(54px, 15vw, 76px); text-align: center; letter-spacing: .08em; padding-block: 8px; }
+.opts { display: grid; gap: 10px; }
+.opts.vf { grid-template-columns: 1fr 1fr; }
+.opt { text-align: left; border: 2px solid var(--line); background: var(--card); color: var(--ink); border-radius: 16px; padding: 15px 16px; font: 700 16px var(--body); cursor: pointer; display: flex; gap: 12px; align-items: center; animation: rise .35s both; transition: transform .12s, border-color .12s; }
+.opts.vf .opt { justify-content: center; font-size: 20px; padding: 22px; }
+.opt .k { flex: none; width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; background: var(--soft); font-size: 13px; font-weight: 800; }
+@media (hover: hover) { .opt:hover:not(:disabled) { border-color: var(--accent); transform: translateY(-2px); } }
+.opt.good { border-color: var(--good); background: color-mix(in srgb, var(--good) 15%, var(--card)); animation: pop .35s both; }
+.opt.bad { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 13%, var(--card)); animation: shake .4s both; }
+.opt:disabled { cursor: default; }
+.opt.dim { opacity: .45; }
+@keyframes shake { 20%, 60% { transform: translateX(-6px) } 40%, 80% { transform: translateX(6px) } }
+.why { background: var(--soft); border-radius: 16px; padding: 14px 16px; animation: rise .3s both; display: grid; gap: 10px; }
+.why b { font-family: var(--display); }
+.plus { font: 800 15px var(--display); color: var(--good); }
+.btn { border: 0; border-radius: 16px; padding: 15px 18px; font: 800 16px var(--body); cursor: pointer; background: var(--accent); color: var(--accent-ink); transition: transform .12s; }
+.btn:active { transform: scale(.97); }
+.btn.ghost { background: transparent; color: var(--ink); border: 2px solid var(--line); }
+.btn.gold { background: var(--gold); color: #1d1838; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; }
+.row .btn { flex: 1; min-width: 140px; }
+/* résultat */
+.result { background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 24px 20px; display: grid; gap: 8px; text-align: center; animation: pop .5s cubic-bezier(.2,1.4,.4,1) both; }
+.big { font: 800 68px/1 var(--display); color: var(--accent); font-variant-numeric: tabular-nums; letter-spacing: -.03em; }
+.big small { font-size: 22px; color: var(--muted); }
+.verdict { font: 800 22px/1.15 var(--display); }
+.stars { font-size: 28px; letter-spacing: 4px; }
+.duel { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; background: var(--soft); border-radius: 18px; padding: 14px; }
+.duel div { display: grid; }
+.duel b { font: 800 26px var(--display); font-variant-numeric: tabular-nums; }
+.duel span { font-size: 13px; color: var(--muted); font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.duel .win b { color: var(--good); }
+.share { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 18px; display: grid; gap: 10px; }
+.share label { font-weight: 800; font-size: 14px; }
+.share input { padding: 13px 14px; border-radius: 14px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); font: 700 16px var(--body); min-width: 0; }
+.share input:focus { border-color: var(--accent); outline: none; }
+.copied { font-size: 13px; color: var(--good); font-weight: 700; min-height: 1.2em; overflow-wrap: anywhere; }
+footer { font-size: 12px; color: var(--muted); text-align: center; display: grid; gap: 4px; }
+footer button { background: none; border: 0; color: var(--muted); text-decoration: underline; cursor: pointer; font: inherit; }
+.privacy { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+#fx { position: fixed; inset: 0; pointer-events: none; z-index: 9; width: 100%; height: 100%; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition: none !important; } .timer.run i { animation: none } }
+.allq { max-width: 560px; margin: 0 auto; padding: 0 16px 32px; color: var(--muted); font-size: 14px; }
+.allq h2 { font-size: 15px; margin: 8px 0; }
+.allq ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.allq a { color: var(--muted); }
+</style>
+
+</head>
+<body>
+<div class="app" id="app"></div>
+<!--LIENS--><nav class="allq" aria-label="Tous les quiz"><h2>Tous les quiz · All quizzes</h2><ul><li><a href="culture/">🧠 Culture générale</a></li><li><a href="histoire/">🏰 Histoire</a></li><li><a href="geo/">🌍 Géographie</a></li><li><a href="sciences/">🔬 Sciences &amp; corps humain</a></li><li><a href="animaux/">🐾 Animaux</a></li><li><a href="vraifaux/">✅ Vrai ou faux</a></li><li><a href="foot/">⚽ Foot</a></li><li><a href="jeux/">🎮 Jeux vidéo</a></li><li><a href="cine/">🎬 Cinéma &amp; séries</a></li><li><a href="emoji/">🍿 Devine le film</a></li><li><a href="musique/">🎧 Musique</a></li><li><a href="lyon/">🦁 Lyon &amp; la France</a></li><li><a href="code/">🚦 Code de la route</a></li><li><a href="cuisine/">🍕 Cuisine du monde</a></li><li><a href="tech/">💻 Tech &amp; internet</a></li><li><a href="anglais/">🇬🇧 Anglais</a></li><li><a href="conducteur/">🚗 Quel conducteur es-tu ?</a></li><li><a href="vacances/">🏝️ Quelles vacances sont faites pour toi ?</a></li><li><a href="en/culture/" hreflang="en">🧠 General knowledge</a></li><li><a href="en/histoire/" hreflang="en">🏰 History</a></li><li><a href="en/geo/" hreflang="en">🌍 Geography</a></li><li><a href="en/sciences/" hreflang="en">🔬 Science &amp; the human body</a></li><li><a href="en/animaux/" hreflang="en">🐾 Animals</a></li><li><a href="en/vraifaux/" hreflang="en">✅ True or false</a></li><li><a href="en/foot/" hreflang="en">⚽ Football</a></li><li><a href="en/jeux/" hreflang="en">🎮 Video games</a></li><li><a href="en/cine/" hreflang="en">🎬 Movies &amp; TV</a></li><li><a href="en/emoji/" hreflang="en">🍿 Guess the movie</a></li><li><a href="en/musique/" hreflang="en">🎧 Music</a></li><li><a href="en/lyon/" hreflang="en">🦁 Lyon &amp; France</a></li><li><a href="en/code/" hreflang="en">🚦 French driving test</a></li><li><a href="en/cuisine/" hreflang="en">🍕 World food</a></li><li><a href="en/tech/" hreflang="en">💻 Tech &amp; internet</a></li><li><a href="en/anglais/" hreflang="en">🇬🇧 French words</a></li><li><a href="en/conducteur/" hreflang="en">🚗 What kind of driver are you?</a></li><li><a href="en/vacances/" hreflang="en">🏝️ Which holiday is made for you?</a></li></ul></nav><!--/LIENS-->
+<canvas id="fx" aria-hidden="true"></canvas>
+
+
+<script src="questions.js"></script>
+<script src="questions-plus.js"></script>
+<script src="questions-en.js"></script>
+<script>
+// Adresse publique du site, utilisée dans les liens de défi (à renseigner une fois le site en ligne)
+const SITE_URL = 'https://quizzmatch.com/';
+const TIME = 20;   // secondes par question
+const $ = s => document.querySelector(s), app = $('#app');
+const store = { get(k) { try { return JSON.parse(localStorage.getItem('qs_' + k)); } catch (_) { return null; } }, set(k, v) { try { localStorage.setItem('qs_' + k, JSON.stringify(v)); } catch (_) {} } };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const typeOf = q => q.type || 'qcm';
+// langue : ?lang=en dans l'adresse, sinon le choix enregistré, sinon la langue du téléphone
+const LANG = (() => { const u = new URLSearchParams(location.search).get('lang'); if (u === 'en' || u === 'fr') { store.set('lang', u); return u; } return store.get('lang') || (/^fr/i.test(navigator.language || 'fr') ? 'fr' : 'en'); })();
+const L = (fr, en) => LANG === 'en' ? en : fr;
+if (LANG === 'en') { applyEnglish(); document.documentElement.lang = 'en'; document.title = 'QuizzMatch · Free quizzes'; }
+
+/* ---------- classement (Supabase) ---------- */
+const SB_URL = 'https://ctgjnpxdaqdnrcxjwnkp.supabase.co', SB_KEY = 'sb_publishable_mz--wiLicR1GMDd2b3Fd2g_ewLTbr9h';
+const sb = (path, opt = {}) => fetch(SB_URL + '/rest/v1/' + path, { ...opt, headers: { apikey: SB_KEY, 'Content-Type': 'application/json', ...(opt.headers || {}) } })
+  .then(r => { if (!r.ok) throw new Error(r.status); return r.status === 201 || r.status === 204 ? null : r.json(); });
+const weekStart = () => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - (d.getDay() + 6) % 7); return d.toISOString(); };   // lundi 0 h
+const BAD = /(encul|connard|connass|salop|pute|batard|bâtard|nique|fdp|pd\b|negr|nègr|bougnoul|hitler|nazi|merde|bite|couille|chatte)/i;
+const cleanPseudo = v => { v = String(v || '').replace(/[^\p{L}\p{N} _.-]/gu, '').replace(/\s+/g, ' ').trim().slice(0, 16); return v.length >= 2 && !BAD.test(v) ? v : ''; };
+// meilleur score de chaque joueur (un pseudo n'apparaît qu'une fois)
+const bestBy = (rows, key = 'pseudo') => { const m = new Map(); for (const r of rows) if (!m.has(r[key]) || r.points > m.get(r[key]).points) m.set(r[key], r); return [...m.values()].sort((a, b) => b.points - a.points); };
+const rowsHTML = (list, me) => list.length ? `<ol>${list.map((r, i) => `<li class="${r.pseudo === me ? 'me' : ''}"><span class="r">${['🥇', '🥈', '🥉'][i] || i + 1}</span><span class="n">${esc(r.pseudo)}</span><span class="p">${r.points} pts</span></li>`).join('')}</ol>` : `<p class="note">${L('Personne cette semaine. Sois le premier !', 'Nobody yet this week. Be the first!')}</p>`;
+async function quizBoard(k, el) {
+  try { const rows = await sb(`scores?select=pseudo,points&quiz=eq.${k}&created_at=gte.${encodeURIComponent(weekStart())}&order=points.desc&limit=300`);
+    el.innerHTML = rowsHTML(bestBy(rows).slice(0, 10), store.get('pseudo')); }
+  catch (_) { el.innerHTML = `<p class="note">${L('Classement indisponible pour le moment.', 'Leaderboard unavailable right now.')}</p>`; }
+}
+async function postScore() {
+  const me = store.get('pseudo'); if (!me || cur.posted) return; cur.posted = true;
+  try { await sb('scores', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ pseudo: me, quiz: cur.k, points: cur.pts, bonnes: cur.good }) }); } catch (_) {}
+}
+function boardBox() {
+  const me = store.get('pseudo');
+  return `<div class="board"><h2>🏆 ${L('Classement de la semaine', 'This week\'s leaderboard')}</h2>
+    ${me ? `<p class="note">${L('Tu joues en tant que', 'Playing as')} <b>${esc(me)}</b> · <button type="button" class="linkish" id="chg" style="all:unset;cursor:pointer;color:var(--accent);font-weight:800">${L('changer', 'change')}</button></p>`
+         : `<p class="note">${L('Choisis un pseudo pour entrer au classement. Pas d\'e-mail, pas de mot de passe.', 'Pick a nickname to join the leaderboard. No email, no password.')}</p><div class="join"><input id="pseudo" maxlength="16" placeholder="${L('Ton pseudo', 'Your nickname')}" autocomplete="nickname"><button class="btn" type="button" id="join" style="width:auto;padding:0 18px">${L('Valider', 'OK')}</button></div><p class="note" id="perr" aria-live="polite"></p>`}
+    <div id="lb"><p class="note">${L('Chargement…', 'Loading…')}</p></div>
+    <button class="btn ghost" type="button" data-go="classement">${L('Voir le classement général', 'See the overall leaderboard')}</button></div>`;
+}
+function wireBoard(onJoin) {
+  const j = $('#join'); if (j) j.onclick = () => { const v = cleanPseudo($('#pseudo').value); if (!v) { $('#perr').textContent = L('2 à 16 caractères, sans gros mots.', '2 to 16 characters, no swear words.'); return; } store.set('pseudo', v); if (!store.get('name')) store.set('name', v); onJoin(); };
+  const c = $('#chg'); if (c) c.onclick = () => { store.set('pseudo', null); onJoin(true); };
+}
+async function ranking(sel) {
+  setHash('classement'); showLinks(false); sel = sel || 'tous';
+  const me = store.get('pseudo'), opts = KEYS.filter(k => typeOf(QUIZ[k]) !== 'perso');
+  app.innerHTML = `${head(`<button class="pill" type="button" data-go="">← ${L('Quiz', 'Quizzes')}</button>`)}
+    <div><h1>🏆 ${L('Classement', 'Leaderboard')}</h1><p class="lead">${L('Remis à zéro chaque lundi.', 'Resets every Monday.')} ${sel === 'tous' ? L('Le total additionne ton meilleur score dans chaque quiz.', 'The total adds up your best score in each quiz.') : L('Ton meilleur score de la semaine.', 'Your best score this week.')}</p></div>
+    <div class="board"><select id="lsel" aria-label="Quiz"><option value="tous">🌍 ${L('Général (tous les quiz)', 'Overall (all quizzes)')}</option>${opts.map(k => `<option value="${k}" ${k === sel ? 'selected' : ''}>${QUIZ[k].emo} ${esc(QUIZ[k].name)}</option>`).join('')}</select>
+      ${me ? `<p class="note">${L('Tu joues en tant que', 'Playing as')} <b>${esc(me)}</b>.</p>` : `<p class="note">${L('Joue un quiz et choisis un pseudo à la fin pour apparaître ici.', 'Play a quiz and pick a nickname at the end to appear here.')}</p>`}
+      <div id="lb"><p class="note">${L('Chargement…', 'Loading…')}</p></div></div>${AD}${FOOT}`;
+  $('#lsel').onchange = e => ranking(e.target.value);
+  const lb = $('#lb');
+  if (sel !== 'tous') return quizBoard(sel, lb);
+  try { const rows = await sb(`scores?select=pseudo,quiz,points&created_at=gte.${encodeURIComponent(weekStart())}&order=points.desc&limit=5000`);
+    const tot = new Map(); for (const r of bestBy(rows.map(r => ({ ...r, id: r.pseudo + '|' + r.quiz })), 'id')) tot.set(r.pseudo, (tot.get(r.pseudo) || 0) + r.points);
+    lb.innerHTML = rowsHTML([...tot].map(([pseudo, points]) => ({ pseudo, points })).sort((a, b) => b.points - a.points).slice(0, 50), me); }
+  catch (_) { lb.innerHTML = `<p class="note">${L('Classement indisponible pour le moment.', 'Leaderboard unavailable right now.')}</p>`; }
+}
+const AD = '';   // emplacements publicitaires retirés (remettre le code AdSense ici plus tard)
+const FOOT = `<footer><span>© QuizzMatch · ${L('quiz gratuits', 'free quizzes')}</span><span><button type="button" data-lang="${L('en', 'fr')}">${L('🇬🇧 English', '🇫🇷 Français')}</button> · <button type="button" data-go="confidentialite">${L('Confidentialité', 'Privacy')}</button></span></footer>`;
+const head = right => `<div class="top"><button class="logo" type="button" data-go=""><span class="q">?</span><span>Quizz<span>Match</span></span></button>${right || ''}</div>`;
+const tint = c => `background:${c}22;`;
+const KEYS = Object.keys(QUIZ);
+const dailyKey = () => { const d = new Date(), n = d.getFullYear() * 400 + d.getMonth() * 31 + d.getDate(); const pool = KEYS.filter(k => typeOf(QUIZ[k]) !== 'perso'); return pool[n % pool.length]; };
+
+/* ---------- accueil ---------- */
+let filter = 'tous';
+const showLinks = on => { const n = $('.allq'); if (n) n.hidden = !on; };   // liste de tous les quiz : seulement sur l'accueil
+function home() {
+  setHash(''); showLinks(true);
+  const dk = dailyKey(), d = QUIZ[dk], played = store.get('played') || 0;
+  app.innerHTML = `${head(`<button class="pill" type="button" data-go="classement">🏆 ${L('Classement', 'Leaderboard')}</button>`)}
+    <div><h1>${L('Teste-toi, puis défie tes potes', 'Test yourself, then challenge your friends')}</h1><p class="lead">${played ? `🎯 ${played} ${L('quiz joués', 'quizzes played')} · ` : ''}${KEYS.length} ${L('quiz', 'quizzes')}, ${Math.floor(KEYS.reduce((n, k) => n + QUIZ[k].qs.length, 0) / 50) * 50}+ questions, ${L('des parties différentes à chaque fois. Réponds vite pour gagner plus de points.', 'a different game every time. Answer fast to score more points.')}</p></div>
+    <button class="daily" type="button" data-go="${dk}" style="background:linear-gradient(135deg, ${d.color}, var(--accent))">
+      <small>${L('Quiz du jour', 'Quiz of the day')}</small><b>${d.emo} ${esc(d.name)}</b><span>${esc(d.sub)}</span><span class="go">${L('Jouer maintenant', 'Play now')} →</span></button>
+    <div class="cats" role="toolbar" aria-label="${L('Catégories', 'Categories')}">${[{ id: 'tous', name: L('Tous', 'All'), emo: '🔥' }, ...CATS].map(c => `<button class="cat" type="button" data-cat="${c.id}" aria-pressed="${c.id === filter}">${c.emo} ${esc(c.name)}</button>`).join('')}</div>
+    <div class="tiles" id="tiles"></div>${AD}${FOOT}`;
+  tiles();
+}
+function tiles() {
+  const list = KEYS.filter(k => filter === 'tous' || QUIZ[k].cat === filter);
+  $('#tiles').innerHTML = list.map((k, i) => { const q = QUIZ[k], b = store.get('best_' + k), t = typeOf(q);
+    const tag = LANG === 'en' && (k === 'lyon' || k === 'code') ? '🇫🇷 France' : t === 'vf' ? L('Vrai/Faux', 'True/False') : t === 'emoji' ? 'Emojis' : t === 'perso' ? 'Test' : '';
+    return `<button class="tile" type="button" data-go="${k}" style="animation-delay:${i * 40}ms">${tag ? `<span class="tag">${tag}</span>` : ''}<span class="ic" style="${tint(q.color)}">${q.emo}</span><b>${esc(q.name)}</b><small>${esc(q.sub)}</small>${b !== null && t !== 'perso' ? `<span class="best">🏆 ${L('Record', 'Best')} : ${b} pts</span>` : ''}</button>`; }).join('');
+}
+
+/* ---------- partie ---------- */
+let cur = null, timerId = null;
+const PER = 10;   // questions par partie, tirées au hasard dans le quiz
+// hasard « reproductible » : le même tirage donne les mêmes questions, pour que l'ami défié joue la même partie
+const rng = seed => () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+function deal(q, seed) {
+  if (typeOf(q) === 'perso') return q.qs;
+  const r = rng(seed), mix = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  return mix(q.qs.filter(x => !x.frOnly)).slice(0, PER).map(([txt, ch, ok, why]) => {
+    if (typeOf(q) === 'vf') return [txt, ch, ok, why];
+    const order = mix(ch.map((_, j) => j));
+    return [txt, order.map(j => ch[j]), order.indexOf(ok), why];
+  });
+}
+function start(k, rival, seed) {
+  const q = QUIZ[k]; if (!q) return home();
+  seed = seed || 1 + Math.floor(Math.random() * 999999);
+  setHash(k); showLinks(false); cur = { k, i: 0, pts: 0, good: 0, picks: [], rival: rival || null, seed, qs: deal(q, seed) };
+  question();
+}
+function question() {
+  clearTimeout(timerId);
+  const q = QUIZ[cur.k], t = typeOf(q), [txt, raw] = cur.qs[cur.i], opts = t === 'vf' ? [L('Vrai', 'True'), L('Faux', 'False')] : raw, n = cur.qs.length;
+  app.innerHTML = `${head(`<button class="pill" type="button" id="quit">✕ ${L('Quitter', 'Quit')}</button>`)}
+    <div class="qtop"><div class="bar"><i style="width:${cur.i / n * 100}%"></i></div>${t === 'perso' ? '' : `<span class="pts">${cur.pts} pts</span>`}</div>
+    ${t === 'perso' ? '' : `<div class="timer" id="timer" style="--t:${TIME}s"><i></i></div>`}
+    <div class="qcard"><span class="qnum">${q.emo} ${esc(q.name)} · Question ${cur.i + 1} ${L('sur', 'of')} ${n}${t === 'emoji' ? L(' · quel film ?', ' · which movie?') : ''}</span><p class="qtext ${t === 'emoji' ? 'emoji' : ''}">${esc(txt)}</p></div>
+    <div class="opts ${t === 'vf' ? 'vf' : ''}">${opts.map((o, j) => `<button class="opt" type="button" data-pick="${j}" style="animation-delay:${80 + j * 60}ms">${t === 'vf' ? '' : `<span class="k">${'ABCD'[j]}</span>`}${esc(o)}</button>`).join('')}</div>
+    <div id="after"></div>${cur.i === 4 ? AD : ''}`;
+  $('#quit').onclick = () => { if (cur.i === 0 || confirm(L('Quitter la partie ? Ton score ne sera pas gardé.', 'Quit this game? Your score won\'t be saved.'))) { clearTimeout(timerId); if (pushed) { pushed = false; history.back(); } else { setHash(''); home(); window.scrollTo(0, 0); } } };
+  requestAnimationFrame(() => setTimeout(() => $('.bar i').style.width = (cur.i + 1) / n * 100 + '%', 30));
+  if (t !== 'perso') { const tm = $('#timer'); requestAnimationFrame(() => tm.classList.add('run')); cur.t0 = performance.now(); timerId = setTimeout(() => pick(-1), TIME * 1000); }
+}
+function pick(j) {
+  clearTimeout(timerId);
+  const q = QUIZ[cur.k], t = typeOf(q), item = cur.qs[cur.i];
+  if (t === 'perso') { cur.picks.push(j); return next(); }
+  const tm = $('#timer'); if (tm) { const el = tm.querySelector('i'); const st = getComputedStyle(el).transform; tm.classList.remove('run'); el.style.transform = st === 'none' ? '' : st; }
+  const ok = j === item[2], left = Math.max(0, TIME - (performance.now() - cur.t0) / 1000), gain = ok ? 100 + Math.round(50 * left / TIME) : 0;
+  if (ok) { cur.good++; cur.pts += gain; }
+  document.querySelectorAll('.opt').forEach((b, n) => { b.disabled = true; if (n === item[2]) b.classList.add('good'); else if (n === j) b.classList.add('bad'); else b.classList.add('dim'); });
+  $('.pts').textContent = cur.pts + ' pts';
+  $('#after').innerHTML = `<div class="why"><div><b>${j < 0 ? L('⏱️ Temps écoulé !', '⏱️ Time\'s up!') : ok ? L('✅ Bonne réponse !', '✅ Correct!') : L('❌ Raté.', '❌ Wrong.')}</b> ${esc(item[3])}</div>${ok ? `<span class="plus">+${gain} points${gain > 130 ? L(' · rapide ⚡', ' · fast ⚡') : ''}</span>` : ''}
+    <button class="btn" type="button" id="nx">${cur.i + 1 < cur.qs.length ? L('Question suivante →', 'Next question →') : L('Voir mon score 🎉', 'See my score 🎉')}</button></div>`;
+  if (ok) burst(12);
+  $('#nx').focus({ preventScroll: true });
+  $('#after').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function next() { cur.i++; window.scrollTo(0, 0); if (cur.i < cur.qs.length) question(); else result(); }
+
+/* ---------- résultat et défi ---------- */
+function result() {
+  clearTimeout(timerId); setHash(cur.k);
+  const q = QUIZ[cur.k], t = typeOf(q), n = cur.qs.length; store.set('played', (store.get('played') || 0) + 1);
+  let body, shareText;
+  if (t === 'perso') {
+    const count = [0, 0, 0, 0]; cur.picks.forEach(p => count[p]++); const top = count.indexOf(Math.max(...count)), [name, desc] = q.profiles[top];
+    body = `<div class="verdict">${L('Résultat', 'Result')}</div><div class="big" style="font-size:40px">${esc(name)}</div><p class="lead">${esc(desc)}</p>`;
+    shareText = L(`« ${q.name} » : je suis ${name} ! Et toi ?`, `"${q.name}": I'm ${name}! What about you?`);
+    burst(80);
+  } else {
+    const best = store.get('best_' + cur.k), rec = best === null || cur.pts > best; if (rec) store.set('best_' + cur.k, cur.pts);
+    const stars = cur.good >= n ? 3 : cur.good >= n * .7 ? 2 : cur.good >= n * .4 ? 1 : 0;
+    const v = (LANG === 'en' ? ['Ouch… rematch? 😅', 'Not bad! 🙂', 'Great job! 💪', 'Perfect, unbeatable! 🏆'] : ['Aïe… revanche ? 😅', 'Pas mal ! 🙂', 'Très fort ! 💪', 'Parfait, imbattable ! 🏆'])[stars];
+    let duel = '';
+    if (cur.rival) { const win = cur.pts > cur.rival.pts, tie = cur.pts === cur.rival.pts;
+      duel = `<div class="duel"><div class="${win ? 'win' : ''}"><b>${cur.pts}</b><span>${L('Toi', 'You')}</span></div><span style="font-size:26px">${tie ? '🤝' : win ? '🏆' : '😤'}</span><div class="${!win && !tie ? 'win' : ''}"><b>${cur.rival.pts}</b><span>${esc(cur.rival.name)}</span></div></div>
+        <div class="verdict">${tie ? L('Égalité parfaite !', 'A perfect tie!') : win ? L(`Tu as battu ${esc(cur.rival.name)} ! 🔥`, `You beat ${esc(cur.rival.name)}! 🔥`) : L(`${esc(cur.rival.name)} gagne… cette fois.`, `${esc(cur.rival.name)} wins… this time.`)}</div>`; }
+    body = `<div class="stars">${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}</div><div class="big" id="count">0<small> pts</small></div>
+      <div class="verdict">${cur.good}/${n} ${L('bonnes réponses', 'correct')} · ${v}</div>${rec && best !== null ? `<p class="lead">${L('🎉 Nouveau record personnel !', '🎉 New personal best!')}</p>` : ''}${duel}`;
+    shareText = cur.rival ? L(`J'ai fait ${cur.pts} points contre ${cur.rival.pts} au quiz « ${q.name} ». À ton tour !`, `I scored ${cur.pts} points against ${cur.rival.pts} in the "${q.name}" quiz. Your turn!`) : L(`J'ai fait ${cur.pts} points (${cur.good}/${n}) au quiz « ${q.name} » sur QuizzMatch. Tu peux faire mieux ? 😏`, `I scored ${cur.pts} points (${cur.good}/${n}) in the "${q.name}" quiz on QuizzMatch. Can you beat that? 😏`);
+    if (stars >= 2 || (cur.rival && cur.pts > cur.rival.pts)) setTimeout(() => burst(140), 300);
+  }
+  const name = store.get('name') || '';
+  app.innerHTML = `${head(`<span class="pill">${q.emo} ${esc(q.name)}</span>`)}
+    <div class="result">${body}</div>
+    ${t === 'perso' ? '' : boardBox()}
+    <div class="share"><h2>⚔️ ${L('Défie tes potes', 'Challenge your friends')}</h2><p class="lead" style="margin:0">${L('Ils jouent le même quiz et voient ton score à battre.', 'They play the same quiz and see the score to beat.')}</p>
+      <label for="pname">${L('Ton prénom', 'Your first name')}</label><input id="pname" maxlength="16" autocomplete="given-name" placeholder="${L('Ex. Karim', 'E.g. Sam')}" value="${esc(name)}">
+      <div class="row"><button class="btn gold" type="button" id="share">${L('Envoyer le défi', 'Send the challenge')}</button><button class="btn ghost" type="button" data-go="${cur.k}">${L('Rejouer', 'Play again')}</button></div>
+      <div class="copied" id="copied" aria-live="polite"></div></div>
+    ${AD}<h2>${L('Continue avec…', 'Keep playing…')}</h2>
+    <div class="tiles">${KEYS.filter(k => k !== cur.k).sort(() => Math.random() - .5).slice(0, 4).map((k, i) => { const x = QUIZ[k]; return `<button class="tile" type="button" data-go="${k}" style="animation-delay:${i * 50}ms"><span class="ic" style="${tint(x.color)}">${x.emo}</span><b>${esc(x.name)}</b><small>${esc(x.sub)}</small></button>`; }).join('')}</div>${FOOT}`;
+  if (t !== 'perso') { countUp($('#count'), cur.pts);
+    const refresh = edit => { const b = $('.board'); b.outerHTML = boardBox(); wireBoard(refresh); if (!edit) postScore().then(() => quizBoard(cur.k, $('#lb'))); else quizBoard(cur.k, $('#lb')); };
+    wireBoard(refresh); postScore().then(() => quizBoard(cur.k, $('#lb'))); }
+  $('#share').onclick = async () => {
+    const nm = ($('#pname').value.trim() || L('Un ami', 'A friend')).slice(0, 16); store.set('name', nm);
+    const token = 'defi.' + cur.k + '.' + (t === 'perso' ? 0 : cur.pts) + '.' + (nm.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'Ami') + '.' + cur.seed;
+    const url = (SITE_URL || location.origin + location.pathname) + '#' + token, msg = shareText + ' 👉 ' + url;
+    try { if (navigator.share) { await navigator.share({ title: 'QuizzMatch', text: shareText, url }); $('#copied').textContent = L('Défi envoyé ✅', 'Challenge sent ✅'); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
+    try { await navigator.clipboard.writeText(msg); $('#copied').textContent = L('Lien copié ! Colle-le dans WhatsApp, Snap ou Insta.', 'Link copied! Paste it into WhatsApp, Snapchat or Instagram.'); } catch (_) { $('#copied').textContent = msg; }
+  };
+}
+function challenge(k, pts, name, seed) {
+  const q = QUIZ[k]; name = name.replace(/-/g, ' ').slice(0, 16) || L('Un ami', 'A friend');
+  app.innerHTML = `${head()}
+    <div class="challenge"><div class="vs">⚔️</div><h1 style="font-size:28px">${esc(name)} ${L('te défie !', 'challenges you!')}</h1>
+      <p class="lead" style="margin:0">Quiz ${L('«', '"')} ${q.emo} ${esc(q.name)} ${L('»', '"')}</p>
+      ${typeOf(q) === 'perso' ? '' : `<div class="big" style="font-size:52px">${pts}<small> pts</small></div><p class="lead" style="margin:0">${L('C\'est le score à battre. Réponds juste et vite !', 'That\'s the score to beat. Answer right and fast!')}</p>`}
+      <button class="btn gold" type="button" id="accept">${L('Relever le défi', 'Accept the challenge')} 💪</button></div>${AD}${FOOT}`;
+  $('#accept').onclick = () => start(k, typeOfQ(k) === 'perso' ? null : { pts, name }, seed);
+}
+const typeOfQ = k => typeOf(QUIZ[k]);
+function privacy() {
+  setHash('confidentialite'); showLinks(false);
+  app.innerHTML = `${head()}<div class="privacy">${L(`<h2>Confidentialité</h2>
+    <p>QuizzMatch ne demande aucun compte et n'utilise pas de cookies. Ton record, ton prénom et ta langue sont gardés dans ton navigateur.</p>
+    <p>Si tu choisis un pseudo, ton pseudo et tes scores sont envoyés au classement public (hébergé par Supabase, en Europe). N'utilise pas ton nom complet. Aucune autre donnée n'est collectée.</p>`, `<h2>Privacy</h2>
+    <p>QuizzMatch needs no account and uses no cookies. Your best scores, first name and language are kept in your browser.</p>
+    <p>If you pick a nickname, your nickname and scores are sent to the public leaderboard (hosted by Supabase, in Europe). Don't use your full name. No other data is collected.</p>`)}</div>
+    <div class="row"><button class="btn" type="button" data-go="">${L('Retour aux quiz', 'Back to quizzes')}</button></div>`;
+}
+
+/* ---------- effets ---------- */
+function countUp(el, to) { if (!el) return; const t0 = performance.now(), d = 900; const step = now => { const k = Math.min(1, (now - t0) / d); el.firstChild.nodeValue = Math.round(to * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); }
+const fx = $('#fx'), fg = fx.getContext('2d'); let parts = [], fxOn = false;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function burst(n) {
+  if (reduce) return; fx.width = innerWidth; fx.height = innerHeight;
+  const cols = ['#5b3df5', '#e0a100', '#13a3c2', '#d23b3b', '#16804a', '#ff7ac6'];
+  for (let i = 0; i < n; i++) parts.push({ x: innerWidth / 2 + (Math.random() - .5) * 120, y: innerHeight * .35, vx: (Math.random() - .5) * 12, vy: -Math.random() * 11 - 4, r: Math.random() * 6.28, vr: (Math.random() - .5) * .3, c: cols[i % cols.length], life: 1 });
+  if (!fxOn) { fxOn = true; requestAnimationFrame(tick); }
+}
+function tick() {
+  fg.clearRect(0, 0, fx.width, fx.height);
+  parts = parts.filter(p => p.life > 0 && p.y < fx.height + 20);
+  for (const p of parts) { p.vy += .35; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.life -= .008; fg.save(); fg.translate(p.x, p.y); fg.rotate(p.r); fg.globalAlpha = Math.max(0, p.life); fg.fillStyle = p.c; fg.fillRect(-4, -7, 8, 14); fg.restore(); }
+  if (parts.length) requestAnimationFrame(tick); else { fxOn = false; fg.clearRect(0, 0, fx.width, fx.height); }
+}
+
+/* ---------- navigation ---------- */
+// depuis l'accueil, on ajoute une étape à l'historique : le bouton retour du téléphone ramène à l'accueil au lieu de quitter le site
+let pushed = false;   // vrai si l'accueil est juste derrière dans l'historique
+function setHash(h) { try { const url = h ? '#' + h : location.pathname + location.search; if (h && !location.hash) { history.pushState(null, '', url); pushed = true; } else history.replaceState(null, '', url); } catch (_) {} }
+document.addEventListener('click', e => {
+  const g = e.target.closest('[data-go]'); if (g) { const k = g.dataset.go; clearTimeout(timerId); k === 'confidentialite' ? privacy() : k === 'classement' ? ranking() : k ? start(k) : home(); window.scrollTo(0, 0); return; }
+  const c = e.target.closest('[data-cat]'); if (c) { filter = c.dataset.cat; document.querySelectorAll('.cat').forEach(b => b.setAttribute('aria-pressed', b.dataset.cat === filter)); tiles(); return; }
+  const p = e.target.closest('[data-pick]'); if (p && !p.disabled) { pick(+p.dataset.pick); return; }
+  if (e.target.closest('#nx')) { next(); return; }
+  const lg = e.target.closest('[data-lang]'); if (lg) { store.set('lang', lg.dataset.lang); location.reload(); return; }
+});
+// au chargement : défi reçu (#defi.quiz.points.prenom.tirage), quiz direct (#foot) ou accueil
+function route() { clearTimeout(timerId); if (!location.hash) pushed = false; const h = location.hash.slice(1), m = h.match(/^defi\.([a-z]+)\.(\d{1,5})\.([A-Za-z0-9-]{0,24})(?:\.(\d{1,6}))?$/);
+  if (m && QUIZ[m[1]]) challenge(m[1], +m[2], m[3], +m[4] || 0); else if (h === 'confidentialite') privacy(); else if (h === 'classement') ranking(); else if (QUIZ[h]) start(h); else home(); window.scrollTo(0, 0); }
+addEventListener('popstate', route);   // bouton retour du téléphone, ou lien de défi ouvert alors que le site est déjà affiché
+route();
+</script>
+
+</body>
+</html>
