@@ -327,6 +327,7 @@ const KOFI = 'https://ko-fi.com/bapkenbegjanian';   // page de dons
 // Le don s'ouvre dans une fenêtre par-dessus le site (paiement géré par Ko-fi/Stripe)
 document.addEventListener('click', e => {
   const a = e.target.closest('[data-kofi]'); if (!a) return;
+  if (window.ApplePaySession) return;   // iPhone/Mac Safari : Apple Pay ne marche que sur la page Ko-fi, on l'ouvre directement
   e.preventDefault();
   const box = document.createElement('div'); box.id = 'kofibox';
   box.innerHTML = `<div><iframe src="${KOFI}/?hidefeed=true&widget=true&embed=true&preview=true" title="Ko-fi" allow="payment *"></iframe><button type="button" aria-label="${L('Fermer', 'Close')}">✕</button></div><a class="kfext" href="${KOFI}" target="_blank" rel="noopener"> ${L('Payer avec Apple Pay / Google Pay', 'Pay with Apple Pay / Google Pay')} ↗</a>`;
