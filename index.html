@@ -32,10 +32,7 @@ body { background: radial-gradient(900px 500px at 85% -10%, rgba(143,124,255,.16
 .lang { display: flex; background: var(--card); border: 1px solid var(--line); border-radius: 99px; padding: 3px; }
 .lang button { border: 0; background: none; color: var(--muted); font: 800 12px var(--body); padding: 4px 9px; border-radius: 99px; cursor: pointer; }
 .lang button[aria-pressed="true"] { background: var(--goldgrad); color: var(--accent-ink); cursor: default; }
-.catnav { position: sticky; top: 0; z-index: 4; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin-inline: -16px; padding: 10px 16px; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
-.catnav::-webkit-scrollbar { display: none; }
-.catnav a { flex: none; text-decoration: none; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 99px; padding: 7px 12px; font: 800 13px var(--body); }
-.cat-sec { scroll-margin-top: 64px; }
+
 @media (max-width: 420px) { .logo { font-size: 21px; gap: 6px; } .logo .q { width: 26px; height: 26px; font-size: 16px; } .top .pill .lbl { display: none; } }
 @keyframes wob { 50% { transform: rotate(8deg) } }
 .board { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 18px; display: grid; gap: 10px; }
@@ -66,15 +63,44 @@ h2 { font: 800 22px/1.1 var(--display); margin: 0; letter-spacing: -.01em; }
 .daily .go { justify-self: start; background: var(--goldgrad); color: var(--accent-ink); font-weight: 800; border-radius: 99px; padding: 8px 14px; font-size: 14px; margin-top: 4px; }
 /* accueil */
 .hero { display: grid; gap: 14px; }
-.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.steps li { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px; font-size: 13px; font-weight: 700; line-height: 1.25; display: grid; gap: 6px; }
-.steps span { width: 24px; height: 24px; border-radius: 50%; background: var(--goldgrad); color: var(--accent-ink); display: grid; place-items: center; font: 800 13px var(--display); }
 .daily { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .daily .dl { display: grid; gap: 4px; position: relative; z-index: 1; }
 .daily b { font-size: 22px; }
 .daily .go { margin: 0; flex: none; position: relative; z-index: 1; }
-.cat-sec { display: grid; gap: 10px; }
-.cat-sec h2 { font-size: 20px; }
+/* accueil : catégories, reprendre ; page catégorie ; profil ; barre d'onglets */
+.sec { display: grid; gap: 10px; }
+.sec h2 { font-size: 19px; }
+.cats2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.catc { position: relative; text-align: left; border: 1px solid var(--line); border-radius: 20px; padding: 16px 14px 14px; color: var(--ink); font: inherit; cursor: pointer; display: grid; gap: 2px; min-height: 132px; align-content: start; animation: rise .4s cubic-bezier(.2,.8,.2,1) both; transition: transform .15s, border-color .15s; }
+@media (hover: hover) { .catc:hover { transform: translateY(-2px); border-color: var(--accent); } }
+.catc:active { transform: scale(.97); }
+.catc .ce { font-size: 34px; line-height: 1; margin-bottom: 8px; }
+.catc b { font: 800 17px/1.15 var(--display); }
+.catc small { color: var(--muted); font-weight: 700; font-size: 13px; }
+.catc .cm { margin-top: auto; padding-top: 8px; font-size: 15px; letter-spacing: 2px; opacity: .9; }
+.recent { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin-inline: -16px; padding-inline: 16px; }
+.recent::-webkit-scrollbar { display: none; }
+.recent button { flex: none; display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 99px; padding: 8px 14px 8px 10px; font: 800 14px var(--body); cursor: pointer; }
+.recent span { font-size: 20px; }
+.qlist { display: grid; gap: 10px; }
+.qlist .tile { min-height: 74px; }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stats div { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px; display: grid; }
+.stats b { font: 800 28px var(--display); background: var(--goldgrad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.stats span { color: var(--muted); font-size: 13px; font-weight: 700; }
+.recs { display: grid; gap: 8px; }
+.recs button { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: center; text-align: left; border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 14px; padding: 10px 12px; font: inherit; cursor: pointer; }
+.recs .re { grid-row: span 2; font-size: 24px; }
+.recs .rn { font-weight: 800; }
+.recs .rl { display: flex; gap: 10px; font-size: 12px; color: var(--muted); font-weight: 700; } .recs i { font-style: normal; }
+.tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 8; display: grid; grid-template-columns: repeat(3, 1fr); padding: 6px max(8px, env(safe-area-inset-left, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)); background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid var(--line); }
+.tabbar button { border: 0; background: none; color: var(--muted); display: grid; justify-items: center; gap: 2px; padding: 6px 0; font: 800 11px var(--body); cursor: pointer; border-radius: 12px; }
+.tabbar button span { font-size: 21px; filter: grayscale(.6); opacity: .8; }
+.tabbar button[aria-current="page"] { color: var(--gold); }
+.tabbar button[aria-current="page"] span { filter: none; opacity: 1; }
+body:not(.notabs) .app { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+body.notabs .tabbar { display: none; }
+body:not(.notabs) .allq { padding-bottom: 100px; }
 .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .tile { position: relative; overflow: hidden; text-align: left; border: 1px solid var(--line); background: linear-gradient(180deg, var(--card2), var(--card)); color: var(--ink); border-radius: 16px; padding: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; font: inherit; animation: rise .4s cubic-bezier(.2,.8,.2,1) both; transition: transform .15s, border-color .15s; min-height: 68px; }
 @media (hover: hover) { .tile:hover { transform: translateY(-2px); border-color: var(--accent); } }
@@ -82,7 +108,7 @@ h2 { font: 800 22px/1.1 var(--display); margin: 0; letter-spacing: -.01em; }
 .tile .ic { flex: none; width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; font-size: 23px; }
 .tile .tx { display: grid; gap: 2px; min-width: 0; }
 .tile b { font: 800 15px/1.15 var(--display); overflow-wrap: break-word; }
-@media (max-width: 360px) { .tile { flex-direction: column; align-items: flex-start; padding: 12px; gap: 8px; } .tile .ic { width: 36px; height: 36px; font-size: 20px; } .tile .tx { width: 100%; } .steps li { font-size: 12px; } }
+@media (max-width: 360px) { .tiles .tile { flex-direction: column; align-items: flex-start; padding: 12px; gap: 8px; } .tiles .tile .ic { width: 36px; height: 36px; font-size: 20px; } .tiles .tile .tx { width: 100%; } }
 .tile small { color: var(--muted); font-size: 12px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tile small.rec { color: var(--gold); }
 .center { text-align: center; }
@@ -178,6 +204,7 @@ footer button { background: none; border: 0; color: var(--muted); text-decoratio
 </head>
 <body>
 <div class="app" id="app"></div>
+<nav class="tabbar" id="tabbar" aria-label="Menu"><button type="button" data-go=""><span>🏠</span><b data-t="home"></b></button><button type="button" data-go="classement"><span>🏆</span><b data-t="rank"></b></button><button type="button" data-go="profil"><span>👤</span><b data-t="me"></b></button></nav>
 <!--LIENS--><details class="allq"><summary>Toutes les pages · All pages</summary><ul><li><a href="culture/">🧠 Culture générale</a></li><li><a href="histoire/">🏰 Histoire</a></li><li><a href="geo/">🌍 Géographie</a></li><li><a href="sciences/">🔬 Sciences &amp; corps humain</a></li><li><a href="animaux/">🐾 Animaux</a></li><li><a href="vraifaux/">✅ Vrai ou faux</a></li><li><a href="foot/">⚽ Foot</a></li><li><a href="jeux/">🎮 Jeux vidéo</a></li><li><a href="cine/">🎬 Cinéma &amp; séries</a></li><li><a href="emoji/">🍿 Devine le film</a></li><li><a href="musique/">🎧 Musique</a></li><li><a href="lyon/">🦁 Lyon &amp; la France</a></li><li><a href="code/">🚦 Code de la route</a></li><li><a href="cuisine/">🍕 Cuisine du monde</a></li><li><a href="tech/">💻 Tech &amp; internet</a></li><li><a href="anglais/">🇬🇧 Anglais</a></li><li><a href="conducteur/">🚗 Quel conducteur es-tu ?</a></li><li><a href="vacances/">🏝️ Quelles vacances sont faites pour toi ?</a></li><li><a href="basket/">🏀 Basket</a></li><li><a href="mangas/">🍥 Mangas &amp; animés</a></li><li><a href="espagnol/">🇪🇸 Espagnol</a></li><li><a href="heros/">🦸 Quel super-héros es-tu ?</a></li><li><a href="animal/">🦁 Quel animal es-tu ?</a></li><li><a href="metier/">💼 Quel métier est fait pour toi ?</a></li><li><a href="en/culture/" hreflang="en">🧠 General knowledge</a></li><li><a href="en/histoire/" hreflang="en">🏰 History</a></li><li><a href="en/geo/" hreflang="en">🌍 Geography</a></li><li><a href="en/sciences/" hreflang="en">🔬 Science &amp; the human body</a></li><li><a href="en/animaux/" hreflang="en">🐾 Animals</a></li><li><a href="en/vraifaux/" hreflang="en">✅ True or false</a></li><li><a href="en/foot/" hreflang="en">⚽ Football</a></li><li><a href="en/jeux/" hreflang="en">🎮 Video games</a></li><li><a href="en/cine/" hreflang="en">🎬 Movies &amp; TV</a></li><li><a href="en/emoji/" hreflang="en">🍿 Guess the movie</a></li><li><a href="en/musique/" hreflang="en">🎧 Music</a></li><li><a href="en/lyon/" hreflang="en">🦁 Lyon &amp; France</a></li><li><a href="en/code/" hreflang="en">🚦 French driving test</a></li><li><a href="en/cuisine/" hreflang="en">🍕 World food</a></li><li><a href="en/tech/" hreflang="en">💻 Tech &amp; internet</a></li><li><a href="en/anglais/" hreflang="en">🇬🇧 French words</a></li><li><a href="en/conducteur/" hreflang="en">🚗 What kind of driver are you?</a></li><li><a href="en/vacances/" hreflang="en">🏝️ Which holiday is made for you?</a></li><li><a href="en/basket/" hreflang="en">🏀 Basketball</a></li><li><a href="en/mangas/" hreflang="en">🍥 Manga &amp; anime</a></li><li><a href="en/espagnol/" hreflang="en">🇪🇸 Spanish</a></li><li><a href="en/heros/" hreflang="en">🦸 Which superhero are you?</a></li><li><a href="en/animal/" hreflang="en">🦁 Which animal are you?</a></li><li><a href="en/metier/" hreflang="en">💼 Which job is made for you?</a></li></ul></details><!--/LIENS-->
 <canvas id="fx" aria-hidden="true"></canvas>
 
@@ -219,6 +246,7 @@ const LANG = (() => { const u = new URLSearchParams(location.search).get('lang')
 const L = (fr, en) => LANG === 'en' ? en : fr;
 if (LANG === 'en') { applyEnglish(); document.documentElement.lang = 'en'; document.title = 'QuizzMatch · Free quizzes'; }
 applyLevels(); addBank(LANG);
+document.querySelectorAll('#tabbar [data-t]').forEach(b => b.textContent = { home: L('Accueil', 'Home'), rank: L('Classement', 'Leaderboard'), me: L('Profil', 'Profile') }[b.dataset.t]);
 
 /* ---------- classement (Supabase) ---------- */
 const SB_URL = 'https://ctgjnpxdaqdnrcxjwnkp.supabase.co', SB_KEY = 'sb_publishable_mz--wiLicR1GMDd2b3Fd2g_ewLTbr9h';
@@ -254,9 +282,9 @@ function wireBoard(onJoin) {
   const c = $('#chg'); if (c) c.onclick = () => { store.set('pseudo', null); store.set('name', null); onJoin(true); };
 }
 async function ranking(sel, lv) {
-  setHash('classement'); showLinks(false); sel = sel || 'tous'; lv = LV[lv] ? lv : 'm';
+  setHash('classement'); showLinks(false); tabs('classement'); sel = sel || 'tous'; lv = LV[lv] ? lv : 'm';
   const me = store.get('pseudo'), opts = KEYS.filter(k => typeOf(QUIZ[k]) !== 'perso');
-  app.innerHTML = `${head(`<button class="pill" type="button" data-go="">← ${L('Quiz', 'Quizzes')}</button>`)}
+  app.innerHTML = `${head()}
     <div><h1>🏆 ${L('Classement', 'Leaderboard')}</h1><p class="lead">${L('Remis à zéro chaque lundi.', 'Resets every Monday.')} ${sel === 'tous' ? L('Le total additionne ton meilleur score dans chaque quiz, tous niveaux confondus.', 'The total adds up your best score in each quiz, any level.') : L('Le meilleur score de chaque joueur cette semaine, pour ce niveau.', 'Each player\'s best score this week, at this level.')}</p></div>
     <div class="board"><select id="lsel" aria-label="Quiz"><option value="tous">🌍 ${L('Général (tous les quiz)', 'Overall (all quizzes)')}</option>${opts.map(k => `<option value="${k}" ${k === sel ? 'selected' : ''}>${QUIZ[k].emo} ${esc(QUIZ[k].name)}</option>`).join('')}</select>
       ${sel === 'tous' ? '' : `<div class="lvtabs" role="group" aria-label="${L('Niveau', 'Level')}">${['f', 'm', 'd'].map(l => `<button type="button" data-rlv="${l}" ${l === lv ? 'aria-pressed="true"' : ''}>${LV[l].dot} ${LV[l].name()}</button>`).join('')}</div>`}
@@ -287,17 +315,48 @@ const tile = (k, i) => { const q = QUIZ[k], t = typeOf(q), b = bestOf(k);
   const tag = LANG === 'en' && (k === 'lyon' || k === 'code') ? '🇫🇷' : '';
   const info = t === 'perso' ? L('Test de personnalité', 'Personality test') : q.sub;
   return `<button class="tile" type="button" data-go="${k}" style="animation-delay:${i * 30}ms"><span class="ic" style="${tint(q.color)}">${q.emo}</span><span class="tx"><b>${esc(q.name)} ${tag}</b>${b !== null && t !== 'perso' ? `<small class="rec">🏆 ${L('Record', 'Best')} ${b} pts</small>` : `<small>${esc(info)}</small>`}</span></button>`; };
+const catOf = id => CATS.find(c => c.id === id);
+const inCat = id => KEYS.filter(k => QUIZ[k].cat === id);
+// barre d'onglets en bas (Accueil, Classement, Profil) ; cachée pendant une partie
+function tabs(on) {
+  document.body.classList.toggle('notabs', on === null);
+  document.querySelectorAll('#tabbar [data-go]').forEach(b => b.setAttribute('aria-current', b.dataset.go === on ? 'page' : 'false'));
+}
 function home() {
-  setHash(''); showLinks(true);
-  const dk = dailyKey(), d = QUIZ[dk], played = store.get('played') || 0;
-  app.innerHTML = `${head(`<button class="pill" type="button" data-go="classement" aria-label="${L('Classement', 'Leaderboard')}">🏆<span class="lbl"> ${L('Classement', 'Leaderboard')}</span></button>`)}
-    <section class="hero"><h1>${L('Le quiz qui se joue entre amis', 'The quiz you play with friends')}</h1>
-      <ol class="steps"><li><span>1</span>${L('Choisis un thème et un niveau', 'Pick a topic and a level')}</li><li><span>2</span>${L('Réponds à 10 questions, vite', 'Answer 10 questions, fast')}</li><li><span>3</span>${L('Défie tes amis avec ton score', 'Challenge your friends')}</li></ol></section>
+  setHash(''); showLinks(true); tabs('');
+  const dk = dailyKey(), d = QUIZ[dk], me = store.get('pseudo'), recent = (store.get('recent') || []).filter(k => QUIZ[k]);
+  app.innerHTML = `${head()}
+    <section class="hero"><h1>${me ? `${L('Salut', 'Hi')} ${esc(me)} 👋` : L('Le quiz qui se joue entre amis', 'The quiz you play with friends')}</h1>
+      <p class="lead">${L('Choisis une catégorie, un niveau, puis défie tes amis.', 'Pick a category and a level, then challenge your friends.')}</p></section>
     <button class="daily" type="button" data-go="${dk}" style="background:radial-gradient(260px 160px at 100% 0%, ${d.color}55, transparent 70%), linear-gradient(135deg, #2b2150, #17131f)">
       <span class="dl"><small>${L('Quiz du jour', 'Quiz of the day')}</small><b>${d.emo} ${esc(d.name)}</b></span><span class="go">${L('Jouer', 'Play')} →</span></button>
-    <nav class="catnav" aria-label="${L('Catégories', 'Categories')}">${CATS.map(c => `<a href="#" data-jump="${c.id}">${c.emo} ${esc(c.name)}</a>`).join('')}</nav>
-    ${CATS.map(c => { const ks = KEYS.filter(k => QUIZ[k].cat === c.id); return `<section class="cat-sec" id="cat-${c.id}"><h2>${c.emo} ${esc(c.name)}</h2><div class="tiles">${ks.map(tile).join('')}</div></section>`; }).join('')}
-    ${played ? `<p class="lead center">🎯 ${played} ${L('parties jouées', 'games played')}</p>` : ''}${FOOT}`;
+    ${recent.length ? `<section class="sec"><h2>${L('Reprendre', 'Play again')}</h2><div class="recent">${recent.map(k => `<button type="button" data-go="${k}"><span>${QUIZ[k].emo}</span>${esc(QUIZ[k].name)}</button>`).join('')}</div></section>` : ''}
+    <section class="sec"><h2>${L('Catégories', 'Categories')}</h2>
+      <div class="cats2">${CATS.map((c, i) => { const ks = inCat(c.id); return `<button class="catc" type="button" data-go="cat-${c.id}" style="animation-delay:${i * 40}ms;background:linear-gradient(150deg, ${QUIZ[ks[0]].color}40, var(--card) 70%)">
+        <span class="ce">${c.emo}</span><b>${esc(c.name)}</b><small>${ks.length} ${L('quiz', ks.length > 1 ? 'quizzes' : 'quiz')}</small><span class="cm">${ks.slice(0, 4).map(k => QUIZ[k].emo).join(' ')}${ks.length > 4 ? ' …' : ''}</span></button>`; }).join('')}</div></section>
+    ${FOOT}`;
+}
+function category(id) {
+  const c = catOf(id); if (!c) return home();
+  setHash('cat-' + id); showLinks(false); tabs('');
+  const ks = inCat(id);
+  app.innerHTML = `${head(`<button class="pill" type="button" data-go="">← ${L('Accueil', 'Home')}</button>`)}
+    <section class="hero"><h1>${c.emo} ${esc(c.name)}</h1><p class="lead">${ks.length} ${L('quiz', 'quizzes')} · ${L('choisis-en un', 'pick one')}</p></section>
+    <div class="qlist">${ks.map(tile).join('')}</div>${FOOT}`;
+}
+function profile() {
+  setHash('profil'); showLinks(false); tabs('profil');
+  const me = store.get('pseudo'), played = store.get('played') || 0;
+  const recs = KEYS.filter(k => typeOf(QUIZ[k]) !== 'perso').map(k => [k, ['f', 'm', 'd'].map(l => store.get('best_' + k + '_' + l))]).filter(([, b]) => b.some(x => x !== null));
+  app.innerHTML = `${head()}
+    <section class="hero"><h1>👤 ${me ? esc(me) : L('Profil', 'Profile')}</h1><p class="lead">${me ? L('Ton pseudo sert pour le classement et tes défis.', 'Your nickname is used for the leaderboard and challenges.') : L('Choisis un pseudo pour apparaître dans le classement. Pas d\'e-mail, pas de mot de passe.', 'Pick a nickname to appear on the leaderboard. No email, no password.')}</p></section>
+    <div class="board"><div class="join"><input id="pseudo" maxlength="16" autocomplete="nickname" placeholder="${L('Ton pseudo (ex. Karim)', 'Your nickname (e.g. Sam)')}" value="${esc(me || '')}" aria-label="${L('Ton pseudo', 'Your nickname')}"><button class="btn" type="button" id="savep">${me ? L('Modifier', 'Change') : 'OK'}</button></div><p class="note" id="perr" aria-live="polite"></p></div>
+    <div class="stats"><div><b>${played}</b><span>${L('parties jouées', 'games played')}</span></div><div><b>${recs.length}</b><span>${L('quiz avec un record', 'quizzes with a best score')}</span></div></div>
+    <section class="sec"><h2>🏆 ${L('Mes records', 'My best scores')}</h2>
+      ${recs.length ? `<div class="recs">${recs.map(([k, b]) => `<button type="button" data-go="${k}"><span class="re">${QUIZ[k].emo}</span><span class="rn">${esc(QUIZ[k].name)}</span><span class="rl">${['f', 'm', 'd'].map((l, i) => `<i title="${LV[l].name()}">${LV[l].dot} ${b[i] ?? '–'}</i>`).join('')}</span></button>`).join('')}</div>`
+        : `<p class="lead">${L('Joue un quiz pour voir tes records ici.', 'Play a quiz to see your best scores here.')}</p>`}</section>
+    ${FOOT}`;
+  $('#savep').onclick = () => { const v = cleanPseudo($('#pseudo').value); if (!v) { $('#perr').textContent = L('2 à 16 caractères, sans gros mots.', '2 to 16 characters, no swear words.'); return; } store.set('pseudo', v); store.set('name', v); profile(); };
 }
 
 /* ---------- présentation d'un quiz et choix du niveau ---------- */
@@ -308,9 +367,9 @@ const LV = {
 };
 function intro(k) {
   const q = QUIZ[k]; if (!q) return home();
-  setHash(k); showLinks(false);
-  const perso = typeOf(q) === 'perso', fr = LANG === 'en' && (k === 'lyon' || k === 'code');
-  app.innerHTML = `${head(`<button class="pill" type="button" data-go="">← ${L('Accueil', 'Home')}</button>`)}
+  setHash(k); showLinks(false); tabs('');
+  const perso = typeOf(q) === 'perso', fr = LANG === 'en' && (k === 'lyon' || k === 'code'), c = catOf(q.cat);
+  app.innerHTML = `${head(`<button class="pill" type="button" data-go="cat-${q.cat}">← ${c ? esc(c.name) : L('Accueil', 'Home')}</button>`)}
     <section class="intro"><span class="big-ic" style="${tint(q.color)}">${q.emo}</span><h1>${esc(q.name)}</h1><p class="lead">${esc(q.sub)}${fr ? L('', ' · questions about France') : ''}</p></section>
     ${perso ? `<div class="how"><p>${L('6 questions rapides, pas de bonne ou de mauvaise réponse. Réponds spontanément pour découvrir ton profil.', '6 quick questions, no right or wrong answers. Go with your gut to find your profile.')}</p></div>
       <button class="btn" type="button" data-lv="m">${L('Commencer le test', 'Start the test')} →</button>`
@@ -341,7 +400,9 @@ function deal(q, seed, lv) {
 function start(k, rival, seed, lv) {
   const q = QUIZ[k]; if (!q) return home();
   seed = seed || 1 + Math.floor(Math.random() * 999999); lv = LV[lv] ? lv : 'm';
-  setHash(k); showLinks(false); cur = { k, lv, i: 0, pts: 0, good: 0, picks: [], rival: rival || null, seed, qs: deal(q, seed, lv) };
+  setHash(k); showLinks(false); tabs(null);
+  store.set('recent', [k].concat((store.get('recent') || []).filter(x => x !== k)).slice(0, 4));
+  cur = { k, lv, i: 0, pts: 0, good: 0, picks: [], rival: rival || null, seed, qs: deal(q, seed, lv) };
   question();
 }
 function question() {
@@ -377,7 +438,7 @@ function next() { cur.i++; window.scrollTo(0, 0); if (cur.i < cur.qs.length) que
 
 /* ---------- résultat et défi ---------- */
 function result() {
-  clearTimeout(timerId); setHash(cur.k);
+  clearTimeout(timerId); setHash(cur.k); tabs('');
   const q = QUIZ[cur.k], t = typeOf(q), n = cur.qs.length, lvTxt = `${LV[cur.lv].dot} ${LV[cur.lv].name()}`; store.set('played', (store.get('played') || 0) + 1);
   let body, shareText;
   if (t === 'perso') {
@@ -405,7 +466,7 @@ function result() {
       <div class="row"><button class="btn ghost" type="button" id="again">↻ ${L('Rejouer', 'Play again')}</button>${t === 'perso' ? '' : `<button class="btn ghost" type="button" data-go="${cur.k}">${L('Autre niveau', 'Other level')}</button>`}</div></div>
     ${t === 'perso' ? '' : boardBox()}
     <h2>${L('Continue avec…', 'Keep playing…')}</h2>
-    <div class="tiles">${KEYS.filter(k => k !== cur.k && typeOf(QUIZ[k]) !== 'perso').sort(() => Math.random() - .5).slice(0, 4).map(tile).join('')}</div>${FOOT}`;
+    <div class="tiles">${KEYS.filter(k => k !== cur.k && typeOf(QUIZ[k]) !== 'perso').sort((a, b) => (QUIZ[b].cat === q.cat) - (QUIZ[a].cat === q.cat) || Math.random() - .5).slice(0, 4).map(tile).join('')}</div>${FOOT}`;
   $('#again').onclick = () => start(cur.k, null, 0, cur.lv);
   // un seul nom pour tout : le pseudo du classement sert aussi pour le défi
   const who = () => { const me = store.get('pseudo') || store.get('name'); $('#who').innerHTML = me
@@ -431,7 +492,7 @@ function result() {
 }
 function challenge(k, pts, name, seed, lv) {
   const q = QUIZ[k]; name = name.replace(/-/g, ' ').slice(0, 16) || L('Un ami', 'A friend'); lv = LV[lv] ? lv : 'm';
-  showLinks(false);
+  showLinks(false); tabs(null);
   app.innerHTML = `${head()}
     <div class="challenge"><div class="vs">⚔️</div><h1 style="font-size:28px">${esc(name)} ${L('te défie !', 'challenges you!')}</h1>
       <p class="lead" style="margin:0">${q.emo} ${esc(q.name)}${typeOf(q) === 'perso' ? '' : ` · ${LV[lv].dot} ${LV[lv].name()}`}</p>
@@ -441,7 +502,7 @@ function challenge(k, pts, name, seed, lv) {
 }
 const typeOfQ = k => typeOf(QUIZ[k]);
 function privacy() {
-  setHash('confidentialite'); showLinks(false);
+  setHash('confidentialite'); showLinks(false); tabs('');
   app.innerHTML = `${head()}<div class="privacy">${L(`<h2>Confidentialité</h2>
     <p>QuizzMatch ne demande aucun compte et n'utilise pas de cookies. Ton record, ton prénom et ta langue sont gardés dans ton navigateur.</p>
     <p>Si tu choisis un pseudo, ton pseudo et tes scores sont envoyés au classement public (hébergé par Supabase, en Europe). N'utilise pas ton nom complet. Aucune autre donnée n'est collectée.</p>`, `<h2>Privacy</h2>
@@ -472,15 +533,14 @@ function tick() {
 let pushed = false;   // vrai si l'accueil est juste derrière dans l'historique
 function setHash(h) { try { const url = h ? '#' + h : location.pathname + location.search; if (h && !location.hash) { history.pushState(null, '', url); pushed = true; } else history.replaceState(null, '', url); } catch (_) {} }
 document.addEventListener('click', e => {
-  const g = e.target.closest('[data-go]'); if (g) { const k = g.dataset.go; clearTimeout(timerId); k === 'confidentialite' ? privacy() : k === 'classement' ? ranking() : k ? intro(k) : home(); window.scrollTo(0, 0); return; }
+  const g = e.target.closest('[data-go]'); if (g) { const k = g.dataset.go; clearTimeout(timerId); k === 'confidentialite' ? privacy() : k === 'classement' ? ranking() : k === 'profil' ? profile() : k.startsWith('cat-') ? category(k.slice(4)) : k ? intro(k) : home(); window.scrollTo(0, 0); return; }
   const p = e.target.closest('[data-pick]'); if (p && !p.disabled) { pick(+p.dataset.pick); return; }
   if (e.target.closest('#nx')) { next(); return; }
-  const jp = e.target.closest('[data-jump]'); if (jp) { e.preventDefault(); $('#cat-' + jp.dataset.jump).scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
   const lg = e.target.closest('[data-lang]'); if (lg) { store.set('lang', lg.dataset.lang); location.reload(); return; }
 });
 // au chargement : défi reçu (#defi.quiz.points.prenom.tirage.niveau), quiz direct (#foot) ou accueil
 function route() { clearTimeout(timerId); if (!location.hash) pushed = false; const h = location.hash.slice(1), m = h.match(/^defi\.([a-z]+)\.(\d{1,5})\.([A-Za-z0-9-]{0,24})(?:\.(\d{1,6}))?(?:\.([fmd]))?$/);
-  if (m && QUIZ[m[1]]) challenge(m[1], +m[2], m[3], +m[4] || 0, m[5]); else if (h === 'confidentialite') privacy(); else if (h === 'classement') ranking(); else if (QUIZ[h]) intro(h); else home(); window.scrollTo(0, 0); }
+  if (m && QUIZ[m[1]]) challenge(m[1], +m[2], m[3], +m[4] || 0, m[5]); else if (h === 'confidentialite') privacy(); else if (h === 'classement') ranking(); else if (h === 'profil') profile(); else if (h.startsWith('cat-')) category(h.slice(4)); else if (QUIZ[h]) intro(h); else home(); window.scrollTo(0, 0); }
 addEventListener('popstate', route);   // bouton retour du téléphone, ou lien de défi ouvert alors que le site est déjà affiché
 route();
 </script>
