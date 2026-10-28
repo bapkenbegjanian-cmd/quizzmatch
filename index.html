@@ -201,6 +201,10 @@ h2.sub { font-size: 18px; }
 .copied { font-size: 13px; color: var(--good); font-weight: 700; min-height: 1.2em; overflow-wrap: anywhere; }
 footer { font-size: 12px; color: var(--muted); text-align: center; display: grid; gap: 4px; }
 footer a { color: var(--gold); text-decoration: none; font-weight: 800; }
+#kofibox { position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,.7); display: flex; align-items: center; justify-content: center; padding: 16px; }
+#kofibox > div { position: relative; width: 100%; max-width: 420px; height: min(690px, 88vh); background: #f9f9f9; border-radius: 18px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.6); }
+#kofibox iframe { width: 100%; height: 100%; border: 0; display: block; }
+#kofibox button { position: absolute; top: 8px; right: 8px; width: 36px; height: 36px; border-radius: 50%; border: 0; background: #111; color: #fff; font-size: 18px; cursor: pointer; }
 .kofi { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); border: 1px solid rgba(233,196,106,.45); border-radius: 18px; padding: 14px 16px; background: linear-gradient(135deg, rgba(233,196,106,.14), var(--card) 70%); }
 .kofi > span:first-child { font-size: 28px; } .kofi span:last-child { display: grid; gap: 2px; } .kofi b { font: 800 16px var(--display); } .kofi small { color: var(--muted); font-size: 13px; }
 footer button { background: none; border: 0; color: var(--muted); text-decoration: underline; cursor: pointer; font: inherit; }
@@ -315,7 +319,16 @@ async function ranking(sel, lv) {
 }
 const AD = '';   // emplacements publicitaires retirés (remettre le code AdSense ici plus tard)
 const KOFI = 'https://ko-fi.com/bapkenbegjanian';   // page de dons
-const FOOT = `<footer><span><a href="${KOFI}" target="_blank" rel="noopener">☕ ${L('Soutenir QuizzMatch', 'Support QuizzMatch')}</a> · <button type="button" data-go="confidentialite">${L('Confidentialité', 'Privacy')}</button></span><span>© QuizzMatch · ${L('quiz gratuits', 'free quizzes')}</span></footer>`;
+// Le don s'ouvre dans une fenêtre par-dessus le site (paiement géré par Ko-fi/Stripe)
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-kofi]'); if (!a) return;
+  e.preventDefault();
+  const box = document.createElement('div'); box.id = 'kofibox';
+  box.innerHTML = `<div><iframe src="${KOFI}/?hidefeed=true&widget=true&embed=true&preview=true" title="Ko-fi"></iframe><button type="button" aria-label="${L('Fermer', 'Close')}">✕</button></div>`;
+  box.addEventListener('click', ev => { if (ev.target === box || ev.target.tagName === 'BUTTON') box.remove(); });
+  document.body.appendChild(box);
+});
+const FOOT = `<footer><span><a href="${KOFI}" target="_blank" rel="noopener" data-kofi>☕ ${L('Soutenir QuizzMatch', 'Support QuizzMatch')}</a> · <button type="button" data-go="confidentialite">${L('Confidentialité', 'Privacy')}</button></span><span>© QuizzMatch · ${L('quiz gratuits', 'free quizzes')}</span></footer>`;
 // barre du haut : logo, choix de langue, puis un bouton (classement, retour ou quitter)
 const langSw = () => `<div class="lang" role="group" aria-label="Langue / Language"><button type="button" ${LANG === 'fr' ? 'aria-pressed="true"' : 'data-lang="fr"'}>FR</button><button type="button" ${LANG === 'en' ? 'aria-pressed="true"' : 'data-lang="en"'}>EN</button></div>`;
 const head = (right, noLang) => `<div class="top"><button class="logo" type="button" data-go=""><span class="q">?</span><span>Quizz<span>Match</span></span></button><div class="tr">${noLang ? '' : langSw()}${right || ''}</div></div>`;
@@ -368,7 +381,7 @@ function profile() {
     <section class="hero"><h1>👤 ${me ? esc(me) : L('Profil', 'Profile')}</h1><p class="lead">${me ? L('Ton pseudo sert pour le classement et tes défis.', 'Your nickname is used for the leaderboard and challenges.') : L('Choisis un pseudo pour apparaître dans le classement. Pas d\'e-mail, pas de mot de passe.', 'Pick a nickname to appear on the leaderboard. No email, no password.')}</p></section>
     <div class="board"><div class="join"><input id="pseudo" maxlength="16" autocomplete="nickname" placeholder="${L('Ton pseudo (ex. Karim)', 'Your nickname (e.g. Sam)')}" value="${esc(me || '')}" aria-label="${L('Ton pseudo', 'Your nickname')}"><button class="btn" type="button" id="savep">${me ? L('Modifier', 'Change') : 'OK'}</button></div><p class="note" id="perr" aria-live="polite"></p></div>
     <div class="stats"><div><b>${played}</b><span>${L('parties jouées', 'games played')}</span></div><div><b>${recs.length}</b><span>${L('quiz avec un record', 'quizzes with a best score')}</span></div></div>
-    <a class="kofi" href="${KOFI}" target="_blank" rel="noopener"><span>☕</span><span><b>${L('Soutenir QuizzMatch', 'Support QuizzMatch')}</b><small>${L('Le site est gratuit et sans pub. Un petit don aide à ajouter de nouveaux quiz.', 'The site is free and ad-free. A small tip helps add new quizzes.')}</small></span></a>
+    <a class="kofi" href="${KOFI}" target="_blank" rel="noopener" data-kofi><span>☕</span><span><b>${L('Soutenir QuizzMatch', 'Support QuizzMatch')}</b><small>${L('Le site est gratuit et sans pub. Un petit don aide à ajouter de nouveaux quiz.', 'The site is free and ad-free. A small tip helps add new quizzes.')}</small></span></a>
     <section class="sec"><h2>🏆 ${L('Mes records', 'My best scores')}</h2>
       ${recs.length ? `<div class="recs">${recs.map(([k, b]) => `<button type="button" data-go="${k}"><span class="re">${QUIZ[k].emo}</span><span class="rn">${esc(QUIZ[k].name)}</span><span class="rl">${['f', 'm', 'd'].map((l, i) => `<i title="${LV[l].name()}">${LV[l].dot} ${b[i] ?? '–'}</i>`).join('')}</span></button>`).join('')}</div>`
         : `<p class="lead">${L('Joue un quiz pour voir tes records ici.', 'Play a quiz to see your best scores here.')}</p>`}</section>
