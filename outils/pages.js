@@ -100,7 +100,7 @@ ${urls.map(u => `  <url><loc>${u}</loc><lastmod>${today}</lastmod></url>`).join(
 </urlset>
 `);
 // liens en dur sur l'accueil, pour que Google trouve toutes les pages
-const nav = `<!--LIENS--><nav class="allq" aria-label="Tous les quiz"><h2>Tous les quiz · All quizzes</h2><ul>${KEYS.map(k => `<li><a href="${k}/">${FR.QUIZ[k].emo} ${esc(FR.QUIZ[k].name)}</a></li>`).join('')}${KEYS.map(k => `<li><a href="en/${k}/" hreflang="en">${EN.QUIZ[k].emo} ${esc(EN.QUIZ[k].name)}</a></li>`).join('')}</ul></nav><!--/LIENS-->`;
+const nav = `<!--LIENS--><details class="allq"><summary>Toutes les pages · All pages</summary><ul>${KEYS.map(k => `<li><a href="${k}/">${FR.QUIZ[k].emo} ${esc(FR.QUIZ[k].name)}</a></li>`).join('')}${KEYS.map(k => `<li><a href="en/${k}/" hreflang="en">${EN.QUIZ[k].emo} ${esc(EN.QUIZ[k].name)}</a></li>`).join('')}</ul></details><!--/LIENS-->`;
 const idx = path.join(DIR, 'index.html'); let html = fs.readFileSync(idx, 'utf8');
 html = html.includes('<!--LIENS-->') ? html.replace(/<!--LIENS-->[\s\S]*?<!--\/LIENS-->/, nav) : html.replace('<canvas id="fx"', nav + '\n<canvas id="fx"');
 fs.writeFileSync(idx, html);
