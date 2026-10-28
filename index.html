@@ -33,7 +33,11 @@ body { background: radial-gradient(900px 500px at 85% -10%, rgba(143,124,255,.16
 .lang button { border: 0; background: none; color: var(--muted); font: 800 12px var(--body); padding: 4px 9px; border-radius: 99px; cursor: pointer; }
 .lang button[aria-pressed="true"] { background: var(--goldgrad); color: var(--accent-ink); cursor: default; }
 
-@media (max-width: 420px) { .logo { font-size: 21px; gap: 6px; } .logo .q { width: 26px; height: 26px; font-size: 16px; } .top .pill .lbl { display: none; } }
+.don { display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; border-radius: 99px; background: var(--goldgrad); color: var(--accent-ink); font: 800 13px var(--body); text-decoration: none; box-shadow: 0 4px 14px rgba(233,196,106,.35); animation: pulse 2.6s ease-in-out infinite; }
+@keyframes pulse { 50% { box-shadow: 0 4px 22px rgba(233,196,106,.7); transform: scale(1.04); } }
+.donb { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--accent-ink); background: var(--goldgrad); border-radius: 18px; padding: 12px 16px; box-shadow: 0 8px 26px rgba(233,196,106,.25); }
+.donb > span:first-child { font-size: 26px; } .donb b { font: 800 15px var(--display); display: block; } .donb small { font-size: 12.5px; line-height: 1.3; opacity: .8; display: block; } .donb .go { margin-left: auto; font-weight: 800; white-space: nowrap; }
+@media (max-width: 420px) { .don { padding: 6px 9px; } .don .lbl { display: none; } .logo { font-size: 21px; gap: 6px; } .logo .q { width: 26px; height: 26px; font-size: 16px; } .top .pill .lbl { display: none; } }
 @keyframes wob { 50% { transform: rotate(8deg) } }
 .board { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 18px; display: grid; gap: 10px; }
 .board h2 { margin: 0; }
@@ -331,7 +335,7 @@ document.addEventListener('click', e => {
 const FOOT = `<footer><span><a href="${KOFI}" target="_blank" rel="noopener" data-kofi>☕ ${L('Soutenir QuizzMatch', 'Support QuizzMatch')}</a> · <button type="button" data-go="confidentialite">${L('Confidentialité', 'Privacy')}</button></span><span>© QuizzMatch · ${L('quiz gratuits', 'free quizzes')}</span></footer>`;
 // barre du haut : logo, choix de langue, puis un bouton (classement, retour ou quitter)
 const langSw = () => `<div class="lang" role="group" aria-label="Langue / Language"><button type="button" ${LANG === 'fr' ? 'aria-pressed="true"' : 'data-lang="fr"'}>FR</button><button type="button" ${LANG === 'en' ? 'aria-pressed="true"' : 'data-lang="en"'}>EN</button></div>`;
-const head = (right, noLang) => `<div class="top"><button class="logo" type="button" data-go=""><span class="q">?</span><span>Quizz<span>Match</span></span></button><div class="tr">${noLang ? '' : langSw()}${right || ''}</div></div>`;
+const head = (right, noLang) => `<div class="top"><button class="logo" type="button" data-go=""><span class="q">?</span><span>Quizz<span>Match</span></span></button><div class="tr"><a class="don" href="${KOFI}" target="_blank" rel="noopener" data-kofi>☕<span class="lbl"> ${L('Soutenir', 'Support')}</span></a>${noLang ? '' : langSw()}${right || ''}</div></div>`;
 const tint = c => `background:${c}22;`;
 const KEYS = Object.keys(QUIZ);
 const dailyKey = () => { const d = new Date(), n = d.getFullYear() * 400 + d.getMonth() * 31 + d.getDate(); const pool = KEYS.filter(k => typeOf(QUIZ[k]) !== 'perso'); return pool[n % pool.length]; };
@@ -356,6 +360,7 @@ function home() {
   app.innerHTML = `${head()}
     <section class="hero"><h1>${me ? `${L('Salut', 'Hi')} ${esc(me)} 👋` : L('Le quiz qui se joue entre amis', 'The quiz you play with friends')}</h1>
       <p class="lead">${L('Choisis une catégorie, un niveau, puis défie tes amis.', 'Pick a category and a level, then challenge your friends.')}</p></section>
+    <a class="donb" href="${KOFI}" target="_blank" rel="noopener" data-kofi><span>☕</span><span><b>${L('Soutiens QuizzMatch', 'Support QuizzMatch')}</b><small>${L('Gratuit et sans pub grâce à vos dons', 'Free and ad-free thanks to your tips')}</small></span><span class="go">${L('Faire un don', 'Donate')} →</span></a>
     <button class="daily" type="button" data-go="${dk}" style="background:radial-gradient(260px 160px at 100% 0%, ${d.color}55, transparent 70%), linear-gradient(135deg, #2b2150, #17131f)">
       <span class="dl"><small>${L('Quiz du jour', 'Quiz of the day')}</small><b>${d.emo} ${esc(d.name)}</b></span><span class="go">${L('Jouer', 'Play')} →</span></button>
     <button class="duelc" type="button" data-go="duel"><span class="de">⚔️</span><span class="dl"><b>${L('Duel en direct', 'Live duel')}</b><small>${L('Joue en même temps qu\'un ami, chacun sur son téléphone', 'Play at the same time as a friend, each on your own phone')}</small></span><span class="go">→</span></button>
