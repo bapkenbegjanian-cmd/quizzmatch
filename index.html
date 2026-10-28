@@ -93,6 +93,17 @@ h2 { font: 800 22px/1.1 var(--display); margin: 0; letter-spacing: -.01em; }
 .recs .re { grid-row: span 2; font-size: 24px; }
 .recs .rn { font-weight: 800; }
 .recs .rl { display: flex; gap: 10px; font-size: 12px; color: var(--muted); font-weight: 700; } .recs i { font-style: normal; }
+.duelc { display: flex; align-items: center; gap: 12px; text-align: left; border: 1px solid rgba(233,196,106,.45); border-radius: 20px; padding: 14px 16px; background: linear-gradient(135deg, rgba(233,196,106,.16), var(--card) 65%); color: var(--ink); font: inherit; cursor: pointer; }
+.duelc .de { font-size: 30px; } .duelc .dl { display: grid; gap: 2px; flex: 1; } .duelc b { font: 800 18px var(--display); } .duelc small { color: var(--muted); font-size: 13px; font-weight: 600; } .duelc .go { font: 800 20px var(--display); color: var(--gold); }
+.field { padding: 13px 14px; border-radius: 14px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); font: 700 16px var(--body); min-width: 0; width: 100%; box-sizing: border-box; }
+.field:focus { border-color: var(--accent); outline: none; }
+.join .field { width: auto; flex: 1; }
+.dcode { font: 800 54px/1 var(--display); letter-spacing: .18em; background: var(--goldgrad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.count { font: 800 96px/1 var(--display); background: var(--goldgrad); -webkit-background-clip: text; background-clip: text; color: transparent; animation: pop .5s both; }
+.spin { width: 28px; height: 28px; border-radius: 50%; border: 3px solid var(--line); border-top-color: var(--gold); margin: 6px auto 0; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg) } }
+.opp { display: flex; align-items: center; gap: 10px; background: var(--soft); border: 1px solid var(--line); border-radius: 14px; padding: 8px 12px; font-size: 14px; font-weight: 700; color: var(--muted); }
+.opp span:first-child { flex: 1; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .opp b { color: var(--gold); font-variant-numeric: tabular-nums; }
 .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 8; display: grid; grid-template-columns: repeat(3, 1fr); padding: 6px max(8px, env(safe-area-inset-left, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)); background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid var(--line); }
 .tabbar button { border: 0; background: none; color: var(--muted); display: grid; justify-items: center; gap: 2px; padding: 6px 0; font: 800 11px var(--body); cursor: pointer; border-radius: 12px; }
 .tabbar button span { font-size: 21px; filter: grayscale(.6); opacity: .8; }
@@ -330,6 +341,7 @@ function home() {
       <p class="lead">${L('Choisis une catégorie, un niveau, puis défie tes amis.', 'Pick a category and a level, then challenge your friends.')}</p></section>
     <button class="daily" type="button" data-go="${dk}" style="background:radial-gradient(260px 160px at 100% 0%, ${d.color}55, transparent 70%), linear-gradient(135deg, #2b2150, #17131f)">
       <span class="dl"><small>${L('Quiz du jour', 'Quiz of the day')}</small><b>${d.emo} ${esc(d.name)}</b></span><span class="go">${L('Jouer', 'Play')} →</span></button>
+    <button class="duelc" type="button" data-go="duel"><span class="de">⚔️</span><span class="dl"><b>${L('Duel en direct', 'Live duel')}</b><small>${L('Joue en même temps qu\'un ami, chacun sur son téléphone', 'Play at the same time as a friend, each on your own phone')}</small></span><span class="go">→</span></button>
     ${recent.length ? `<section class="sec"><h2>${L('Reprendre', 'Play again')}</h2><div class="recent">${recent.map(k => `<button type="button" data-go="${k}"><span>${QUIZ[k].emo}</span>${esc(QUIZ[k].name)}</button>`).join('')}</div></section>` : ''}
     <section class="sec"><h2>${L('Catégories', 'Categories')}</h2>
       <div class="cats2">${CATS.map((c, i) => { const ks = inCat(c.id); return `<button class="catc" type="button" data-go="cat-${c.id}" style="animation-delay:${i * 40}ms;background:linear-gradient(150deg, ${QUIZ[ks[0]].color}40, var(--card) 70%)">
@@ -375,9 +387,11 @@ function intro(k) {
       <button class="btn" type="button" data-lv="m">${L('Commencer le test', 'Start the test')} →</button>`
     : `<h2 class="sub">${L('Choisis ton niveau', 'Choose your level')}</h2>
       <div class="levels">${['f', 'm', 'd'].map(l => { const b = store.get('best_' + k + '_' + l); return `<button class="lv lv-${l}" type="button" data-lv="${l}"><span class="lv-n">${LV[l].dot} ${LV[l].name()}</span><span class="lv-i">${LV[l].t} s ${L('par question', 'per question')} · ${L('jusqu\'à', 'up to')} ${(LV[l].base + LV[l].bonus) * PER} pts</span>${b !== null ? `<span class="lv-b">🏆 ${L('Ton record', 'Your best')} : ${b} pts</span>` : ''}<span class="lv-go">→</span></button>`; }).join('')}</div>
+      <button class="btn ghost" type="button" id="iduel">⚔️ ${L('Défier un ami en direct sur ce quiz', 'Live duel a friend on this quiz')}</button>
       <div class="how"><b>${L('Comment ça marche', 'How it works')}</b><ul><li>${L('10 questions tirées au hasard, 4 réponses possibles.', '10 random questions, 4 possible answers.')}</li><li>${L('Plus tu réponds vite, plus tu gagnes de points.', 'The faster you answer, the more points you get.')}</li><li>${L('À la fin, envoie le défi : tes amis jouent les mêmes questions.', 'At the end, send the challenge: your friends get the same questions.')}</li></ul></div>`}
     ${FOOT}`;
   document.querySelectorAll('[data-lv]').forEach(b => b.onclick = () => start(k, null, 0, b.dataset.lv));
+  const dz = $('#iduel'); if (dz) dz.onclick = () => duelHome(k);
 }
 
 /* ---------- partie ---------- */
@@ -402,7 +416,7 @@ function start(k, rival, seed, lv) {
   seed = seed || 1 + Math.floor(Math.random() * 999999); lv = LV[lv] ? lv : 'm';
   setHash(k); showLinks(false); tabs(null);
   store.set('recent', [k].concat((store.get('recent') || []).filter(x => x !== k)).slice(0, 4));
-  cur = { k, lv, i: 0, pts: 0, good: 0, picks: [], rival: rival || null, seed, qs: deal(q, seed, lv) };
+  cur = { k, lv, i: 0, pts: 0, good: 0, picks: [], rival: rival || null, seed, qs: deal(q, seed, lv), duel: !!(duel && duel.going) };
   question();
 }
 function question() {
@@ -410,12 +424,13 @@ function question() {
   const q = QUIZ[cur.k], t = typeOf(q), [txt, raw] = cur.qs[cur.i], opts = t === 'vf' ? [L('Vrai', 'True'), L('Faux', 'False')] : raw, n = cur.qs.length, T = LV[cur.lv].t;
   app.innerHTML = `${head(`<button class="pill" type="button" id="quit">✕ ${L('Quitter', 'Quit')}</button>`, true)}
     <div class="qhead"><span>${q.emo} ${esc(q.name)}${t === 'perso' ? '' : ` · ${LV[cur.lv].dot} ${LV[cur.lv].name()}`}</span>${t === 'perso' ? '' : `<span class="pts">${cur.pts} pts</span>`}</div>
+    ${cur.duel && duel && duel.opp ? `<div class="opp" id="opp">${duelOppHTML()}</div>` : ''}
     <div class="qtop"><div class="bar"><i style="width:${cur.i / n * 100}%"></i></div><span class="qn">${cur.i + 1}/${n}</span></div>
     ${t === 'perso' ? '' : `<div class="timer" id="timer" style="--t:${T}s"><i></i></div>`}
     <div class="qcard">${t === 'emoji' ? `<span class="qnum">${L('Quel film se cache ici ?', 'Which movie is this?')}</span>` : ''}<p class="qtext ${t === 'emoji' ? 'emoji' : ''}">${esc(txt)}</p></div>
     <div class="opts ${t === 'vf' ? 'vf' : ''}">${opts.map((o, j) => `<button class="opt" type="button" data-pick="${j}" style="animation-delay:${80 + j * 60}ms">${t === 'vf' ? '' : `<span class="k">${'ABCD'[j]}</span>`}${esc(o)}</button>`).join('')}</div>
     <div id="after"></div>`;
-  $('#quit').onclick = () => { if (cur.i === 0 || confirm(L('Quitter la partie ? Ton score ne sera pas gardé.', 'Quit this game? Your score won\'t be saved.'))) { clearTimeout(timerId); intro(cur.k); window.scrollTo(0, 0); } };
+  $('#quit').onclick = () => { if (cur.i === 0 || confirm(L('Quitter la partie ? Ton score ne sera pas gardé.', 'Quit this game? Your score won\'t be saved.'))) { clearTimeout(timerId); if (cur.duel) { duelStop(); cur.duel = false; } intro(cur.k); window.scrollTo(0, 0); } };
   requestAnimationFrame(() => setTimeout(() => $('.bar i').style.width = (cur.i + 1) / n * 100 + '%', 30));
   if (t !== 'perso') { const tm = $('#timer'); requestAnimationFrame(() => tm.classList.add('run')); cur.t0 = performance.now(); timerId = setTimeout(() => pick(-1), T * 1000); }
 }
@@ -428,13 +443,119 @@ function pick(j) {
   if (ok) { cur.good++; cur.pts += gain; }
   document.querySelectorAll('.opt').forEach((b, n) => { b.disabled = true; if (n === item[2]) b.classList.add('good'); else if (n === j) b.classList.add('bad'); else b.classList.add('dim'); });
   $('.pts').textContent = cur.pts + ' pts';
+  if (cur.duel) { cur.i++; duelSend(); cur.i--; }
   $('#after').innerHTML = `<div class="why"><div><b>${j < 0 ? L('⏱️ Temps écoulé !', '⏱️ Time\'s up!') : ok ? L('✅ Bonne réponse !', '✅ Correct!') : L('❌ Raté.', '❌ Wrong.')}</b> ${esc(item[3])}</div>${ok ? `<span class="plus">+${gain} points${gain >= lv.base + lv.bonus * .6 ? L(' · rapide ⚡', ' · fast ⚡') : ''}</span>` : ''}
     <button class="btn" type="button" id="nx">${cur.i + 1 < cur.qs.length ? L('Question suivante →', 'Next question →') : L('Voir mon score 🎉', 'See my score 🎉')}</button></div>`;
   if (ok) burst(12);
   $('#nx').focus({ preventScroll: true });
   $('#after').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
-function next() { cur.i++; window.scrollTo(0, 0); if (cur.i < cur.qs.length) question(); else result(); }
+function next() { cur.i++; window.scrollTo(0, 0); if (cur.i < cur.qs.length) question(); else if (cur.duel) { cur.done = true; duelSend(); postScore(); duelResult(); } else result(); }
+
+/* ---------- duel en direct : deux téléphones jouent les mêmes questions en même temps ---------- */
+// Canal temps réel Supabase (diffusion, sans base de données). Avec ?duellocal dans l'adresse, un BroadcastChannel
+// du navigateur le remplace : deux onglets du même navigateur peuvent alors se défier, utile pour tester.
+const DUEL_LIB = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';
+const DUEL_EVENTS = ['join', 'start', 'score', 'leave'];
+let duel = null;   // { code, host, name, quiz, lv, seed, ch, opp: { name, i, pts, good, done }, timer }
+const loadScript = src => new Promise((ok, ko) => { if ([...document.scripts].some(s => s.src === src)) return ok(); const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = ko; document.head.appendChild(s); });
+async function duelChannel(code, onMsg) {
+  if (new URLSearchParams(location.search).has('duellocal')) {
+    const bc = new BroadcastChannel('qm-duel-' + code); bc.onmessage = e => onMsg(e.data.event, e.data.payload);
+    return { send: (event, payload) => bc.postMessage({ event, payload }), close: () => bc.close() };
+  }
+  await loadScript(DUEL_LIB);
+  const cli = window.supabase.createClient(SB_URL, SB_KEY), ch = cli.channel('qm-duel-' + code);
+  DUEL_EVENTS.forEach(ev => ch.on('broadcast', { event: ev }, m => onMsg(ev, m.payload)));
+  await new Promise((ok, ko) => ch.subscribe(st => st === 'SUBSCRIBED' ? ok() : (st === 'CHANNEL_ERROR' || st === 'TIMED_OUT') && ko(new Error(st))));
+  return { send: (event, payload) => ch.send({ type: 'broadcast', event, payload }), close: () => cli.removeChannel(ch) };
+}
+function duelStop() { if (duel) { clearInterval(duel.timer); try { duel.ch && duel.ch.send('leave', {}); duel.ch && duel.ch.close(); } catch (_) {} } duel = null; }
+const duelOpts = sel => KEYS.filter(k => typeOf(QUIZ[k]) !== 'perso').map(k => `<option value="${k}" ${k === sel ? 'selected' : ''}>${QUIZ[k].emo} ${esc(QUIZ[k].name)}</option>`).join('');
+
+// écran d'accueil du duel : pseudo, créer (quiz + niveau) ou rejoindre (code)
+function duelHome(k, code) {
+  duelStop(); setHash('duel'); showLinks(false); tabs('');
+  const me = store.get('pseudo') || store.get('name') || '';
+  app.innerHTML = `${head(`<button class="pill" type="button" data-go="">← ${L('Accueil', 'Home')}</button>`)}
+    <section class="hero"><h1>⚔️ ${L('Duel en direct', 'Live duel')}</h1><p class="lead">${L('Joue en même temps qu\'un ami, chacun sur son téléphone : mêmes questions, scores en direct.', 'Play at the same time as a friend, each on your own phone: same questions, live scores.')}</p></section>
+    <div class="board"><label class="note" for="dname">${L('Ton pseudo', 'Your nickname')}</label><input id="dname" class="field" maxlength="16" autocomplete="nickname" placeholder="${L('Ex. Karim', 'E.g. Sam')}" value="${esc(me)}"></div>
+    <div class="board"><h2>🎮 ${L('Créer un duel', 'Create a duel')}</h2>
+      <select id="dquiz" class="field" aria-label="Quiz">${duelOpts(k || dailyKey())}</select>
+      <div class="lvtabs" role="group" aria-label="${L('Niveau', 'Level')}">${['f', 'm', 'd'].map(l => `<button type="button" data-dlv="${l}" ${l === 'm' ? 'aria-pressed="true"' : ''}>${LV[l].dot} ${LV[l].name()}</button>`).join('')}</div>
+      <button class="btn" type="button" id="dcreate">${L('Créer et obtenir un code', 'Create and get a code')}</button></div>
+    <div class="board"><h2>🔑 ${L('Rejoindre un duel', 'Join a duel')}</h2>
+      <div class="join"><input id="dcode" class="field" inputmode="numeric" maxlength="4" placeholder="${L('Code à 4 chiffres', '4-digit code')}" value="${esc(code || '')}" aria-label="Code"><button class="btn" type="button" id="djoin">${L('Rejoindre', 'Join')}</button></div></div>
+    <p class="note center" id="derr" aria-live="polite"></p>${FOOT}`;
+  let lv = 'm';
+  document.querySelectorAll('[data-dlv]').forEach(b => b.onclick = () => { lv = b.dataset.dlv; document.querySelectorAll('[data-dlv]').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+  const name = () => { const v = cleanPseudo($('#dname').value); if (!v) { $('#derr').textContent = L('Choisis d\'abord un pseudo (2 à 16 caractères).', 'Pick a nickname first (2 to 16 characters).'); $('#dname').focus(); return ''; } store.set('pseudo', v); store.set('name', v); return v; };
+  $('#dcreate').onclick = () => { const n = name(); if (n) duelCreate(n, $('#dquiz').value, lv); };
+  $('#djoin').onclick = () => { const n = name(), c = $('#dcode').value.replace(/\D/g, ''); if (!n) return; if (c.length !== 4) { $('#derr').textContent = L('Le code fait 4 chiffres.', 'The code has 4 digits.'); return; } duelJoin(n, c); };
+  if (code && me) duelJoin(me, code);
+}
+function duelWait(title, body) {
+  app.innerHTML = `${head(`<button class="pill" type="button" id="dcancel">✕ ${L('Annuler', 'Cancel')}</button>`, true)}
+    <div class="challenge"><div class="vs">⚔️</div><h1 style="font-size:26px">${title}</h1>${body}<div class="spin" aria-hidden="true"></div></div>`;
+  $('#dcancel').onclick = () => { duelStop(); duelHome(); };
+}
+async function duelCreate(name, quiz, lv) {
+  const code = String(1000 + Math.floor(Math.random() * 9000)), seed = 1 + Math.floor(Math.random() * 999999);
+  duel = { code, host: true, name, quiz, lv, seed, opp: null };
+  tabs(null);
+  duelWait(L('Connexion…', 'Connecting…'), '');
+  try { duel.ch = await duelChannel(code, duelMsg); } catch (_) { duelStop(); duelHome(quiz); $('#derr').textContent = L('Connexion impossible. Vérifie ta connexion internet.', 'Could not connect. Check your internet connection.'); return; }
+  const url = SITE_URL + '#duel-' + code, q = QUIZ[quiz];
+  duelWait(L('En attente de ton adversaire…', 'Waiting for your opponent…'), `<p class="lead" style="margin:0">${q.emo} ${esc(q.name)} · ${LV[lv].dot} ${LV[lv].name()}</p>
+    <p class="note" style="margin:6px 0 0">${L('Code du duel', 'Duel code')}</p><div class="dcode">${code}</div>
+    <button class="btn gold" type="button" id="dshare">📲 ${L('Envoyer le lien', 'Send the link')}</button><div class="copied" id="copied" aria-live="polite"></div>`);
+  $('#dshare').onclick = async () => { const text = L(`⚔️ Duel en direct sur QuizzMatch ! Code ${code}`, `⚔️ Live duel on QuizzMatch! Code ${code}`);
+    try { if (navigator.share) { await navigator.share({ title: 'QuizzMatch', text, url }); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
+    try { await navigator.clipboard.writeText(text + ' 👉 ' + url); $('#copied').textContent = L('Lien copié !', 'Link copied!'); } catch (_) { $('#copied').textContent = url; } };
+}
+async function duelJoin(name, code) {
+  duel = { code, host: false, name, opp: null }; tabs(null);
+  duelWait(L('Connexion au duel…', 'Joining the duel…'), `<div class="dcode">${code}</div>`);
+  try { duel.ch = await duelChannel(code, duelMsg); } catch (_) { duelStop(); duelHome(null, code); $('#derr').textContent = L('Connexion impossible. Vérifie ta connexion internet.', 'Could not connect. Check your internet connection.'); return; }
+  let tries = 0;
+  const knock = () => { if (!duel || duel.quiz) return; if (++tries > 8) { duelStop(); duelHome(null, code); $('#derr').textContent = L('Aucun duel trouvé avec ce code, ou il a déjà commencé.', 'No duel found with this code, or it has already started.'); return; } duel.ch.send('join', { name }); };
+  knock(); duel.timer = setInterval(knock, 2000);
+}
+function duelMsg(ev, p) {
+  if (!duel) return;
+  if (ev === 'join' && duel.host && !duel.opp) { duel.opp = { name: String(p.name || '?').slice(0, 16), i: 0, pts: 0, good: 0, done: false }; duel.ch.send('start', { quiz: duel.quiz, lv: duel.lv, seed: duel.seed, name: duel.name }); duelGo(); }
+  else if (ev === 'start' && !duel.host && (!duel.quiz || duel.rematch || (cur && cur.done))) { clearInterval(duel.timer); Object.assign(duel, { quiz: p.quiz, lv: p.lv, seed: p.seed, rematch: false }); duel.opp = { name: String(p.name || '?').slice(0, 16), i: 0, pts: 0, good: 0, done: false }; duelGo(); }
+  else if (ev === 'score' && duel.opp) { Object.assign(duel.opp, { i: p.i, pts: p.pts, good: p.good, done: !!p.done }); duelOppShow(); if (duel.opp.done && cur && cur.done) duelResult(); }
+  else if (ev === 'leave' && duel.opp) { duel.opp.left = true; duelOppShow(); if (cur && cur.done) duelResult(); }
+}
+// compte à rebours 3, 2, 1 puis la partie
+function duelGo() {
+  if (!QUIZ[duel.quiz]) return duelHome();
+  let n = 3; tabs(null);
+  const draw = () => { app.innerHTML = `${head(null, true)}<div class="challenge"><p class="lead" style="margin:0">${esc(duel.name)} 🆚 ${esc(duel.opp.name)}</p><div class="count">${n || 'GO!'}</div><p class="lead" style="margin:0">${QUIZ[duel.quiz].emo} ${esc(QUIZ[duel.quiz].name)} · ${LV[duel.lv].dot} ${LV[duel.lv].name()}</p></div>`; };
+  duel.counted = false; draw(); const t = setInterval(() => { n--; draw(); if (n < 0) { clearInterval(t); duel.going = true; start(duel.quiz, null, duel.seed, duel.lv); duel.going = false; } }, 800);
+}
+const duelOppHTML = () => { const o = duel.opp; return `<span>🆚 ${esc(o.name)}</span><span>${o.left ? L('a quitté', 'left') : o.done ? L('a fini', 'finished') : `${Math.min(o.i + 1, PER)}/${PER}`}</span><b>${o.pts} pts</b>`; };
+function duelOppShow() { const el = $('#opp'); if (el && duel && duel.opp) el.innerHTML = duelOppHTML(); }
+function duelSend() { if (duel && duel.ch) duel.ch.send('score', { i: cur.i, pts: cur.pts, good: cur.good, done: !!cur.done }); }
+function duelResult() {
+  if (!duel || !duel.opp) return home();
+  tabs(''); setHash('duel');
+  const o = duel.opp, wait = !o.done && !o.left, win = cur.pts > o.pts, tie = cur.pts === o.pts;
+  if (!wait && !duel.counted) { duel.counted = true; if (win || o.left) setTimeout(() => burst(140), 200); }
+  app.innerHTML = `${head(`<button class="pill" type="button" id="dquit">${L('Quitter le duel', 'Leave duel')}</button>`)}
+    <div class="result"><span class="pill">${QUIZ[cur.k].emo} ${esc(QUIZ[cur.k].name)} · ${LV[cur.lv].dot} ${LV[cur.lv].name()}</span>
+      <div class="duel"><div class="${!wait && (win || o.left) ? 'win' : ''}"><b>${cur.pts}</b><span>${esc(duel.name)} · ${cur.good}/${PER}</span></div><span style="font-size:26px">${wait ? '⏳' : o.left ? '🏆' : tie ? '🤝' : win ? '🏆' : '😤'}</span><div class="${!wait && !win && !tie && !o.left ? 'win' : ''}"><b>${o.pts}</b><span>${esc(o.name)} · ${o.left ? L('a quitté', 'left') : `${o.good}/${PER}`}</span></div></div>
+      <div class="verdict">${wait ? L(`${esc(o.name)} joue encore…`, `${esc(o.name)} is still playing…`) : o.left ? L('Ton adversaire a quitté, tu gagnes !', 'Your opponent left, you win!') : tie ? L('Égalité parfaite !', 'A perfect tie!') : win ? L('Victoire ! 🔥', 'You win! 🔥') : L(`${esc(o.name)} gagne… revanche ?`, `${esc(o.name)} wins… rematch?`)}</div></div>
+    ${wait ? '' : `<div class="row"><button class="btn gold" type="button" id="drematch">${duel.host ? L('↻ Revanche', '↻ Rematch') : L('↻ Revanche (en attente de l\'hôte)', '↻ Rematch (waiting for the host)')}</button></div>`}
+    ${FOOT}`;
+  $('#dquit').onclick = () => { duelStop(); home(); };
+  const r = $('#drematch'); if (r) r.onclick = () => {
+    if (o.left) { duelStop(); return duelHome(cur.k); }
+    if (duel.host) { duel.seed = 1 + Math.floor(Math.random() * 999999); duel.opp = { name: o.name, i: 0, pts: 0, good: 0, done: false }; duel.counted = false; duel.ch.send('start', { quiz: duel.quiz, lv: duel.lv, seed: duel.seed, name: duel.name }); duelGo(); }
+    else { duel.rematch = true; duel.counted = false; r.disabled = true; r.textContent = L('En attente de l\'hôte…', 'Waiting for the host…'); }
+  };
+}
 
 /* ---------- résultat et défi ---------- */
 function result() {
@@ -533,14 +654,14 @@ function tick() {
 let pushed = false;   // vrai si l'accueil est juste derrière dans l'historique
 function setHash(h) { try { const url = h ? '#' + h : location.pathname + location.search; if (h && !location.hash) { history.pushState(null, '', url); pushed = true; } else history.replaceState(null, '', url); } catch (_) {} }
 document.addEventListener('click', e => {
-  const g = e.target.closest('[data-go]'); if (g) { const k = g.dataset.go; clearTimeout(timerId); k === 'confidentialite' ? privacy() : k === 'classement' ? ranking() : k === 'profil' ? profile() : k.startsWith('cat-') ? category(k.slice(4)) : k ? intro(k) : home(); window.scrollTo(0, 0); return; }
+  const g = e.target.closest('[data-go]'); if (g) { const k = g.dataset.go; clearTimeout(timerId); k === 'confidentialite' ? privacy() : k === 'classement' ? ranking() : k === 'profil' ? profile() : k === 'duel' ? duelHome() : k.startsWith('cat-') ? category(k.slice(4)) : k ? intro(k) : home(); window.scrollTo(0, 0); return; }
   const p = e.target.closest('[data-pick]'); if (p && !p.disabled) { pick(+p.dataset.pick); return; }
   if (e.target.closest('#nx')) { next(); return; }
   const lg = e.target.closest('[data-lang]'); if (lg) { store.set('lang', lg.dataset.lang); location.reload(); return; }
 });
 // au chargement : défi reçu (#defi.quiz.points.prenom.tirage.niveau), quiz direct (#foot) ou accueil
-function route() { clearTimeout(timerId); if (!location.hash) pushed = false; const h = location.hash.slice(1), m = h.match(/^defi\.([a-z]+)\.(\d{1,5})\.([A-Za-z0-9-]{0,24})(?:\.(\d{1,6}))?(?:\.([fmd]))?$/);
-  if (m && QUIZ[m[1]]) challenge(m[1], +m[2], m[3], +m[4] || 0, m[5]); else if (h === 'confidentialite') privacy(); else if (h === 'classement') ranking(); else if (h === 'profil') profile(); else if (h.startsWith('cat-')) category(h.slice(4)); else if (QUIZ[h]) intro(h); else home(); window.scrollTo(0, 0); }
+function route() { clearTimeout(timerId); if (duel && !/^#duel/.test(location.hash)) duelStop(); if (!location.hash) pushed = false; const h = location.hash.slice(1), m = h.match(/^defi\.([a-z]+)\.(\d{1,5})\.([A-Za-z0-9-]{0,24})(?:\.(\d{1,6}))?(?:\.([fmd]))?$/);
+  if (m && QUIZ[m[1]]) challenge(m[1], +m[2], m[3], +m[4] || 0, m[5]); else if (h === 'confidentialite') privacy(); else if (h === 'classement') ranking(); else if (h === 'profil') profile(); else if (h === 'duel') duelHome(); else if (/^duel-\d{4}$/.test(h)) duelHome(null, h.slice(5)); else if (h.startsWith('cat-')) category(h.slice(4)); else if (QUIZ[h]) intro(h); else home(); window.scrollTo(0, 0); }
 addEventListener('popstate', route);   // bouton retour du téléphone, ou lien de défi ouvert alors que le site est déjà affiché
 route();
 </script>
