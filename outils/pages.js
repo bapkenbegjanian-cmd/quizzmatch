@@ -69,6 +69,7 @@ function page(lang, k) {
 <style>${CSS}</style>
 <script type="application/ld+json">${JSON.stringify(ld)}</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9506500644223987" crossorigin="anonymous"></script>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c26abd6fbc144c2c9333e77a7b090778"}'></script><!-- End Cloudflare Web Analytics -->
 </head>
 <body><main>
 <div class="top"><a class="logo" href="${lang === 'en' ? SITE + '?lang=en' : SITE}">Quizz<b>Match</b></a><a href="${url(lang === 'en' ? 'fr' : 'en', k)}">${lang === 'en' ? '🇫🇷 Français' : '🇬🇧 English'}</a></div>
