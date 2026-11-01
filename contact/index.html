@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contact | QuizzMatch</title>
+<meta name="description" content="Une question, une erreur dans un quiz, une idée de nouveau quiz ? Écris à l'équipe de QuizzMatch.">
+<link rel="canonical" href="https://quizzmatch.com/contact/">
+<link rel="alternate" hreflang="fr" href="https://quizzmatch.com/contact/">
+<link rel="alternate" hreflang="en" href="https://quizzmatch.com/en/contact/">
+<link rel="alternate" hreflang="x-default" href="https://quizzmatch.com/contact/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Contact | QuizzMatch">
+<meta property="og:description" content="Une question, une erreur dans un quiz, une idée de nouveau quiz ? Écris à l'équipe de QuizzMatch.">
+<meta property="og:url" content="https://quizzmatch.com/contact/">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,700;6..12,800&display=swap">
+<style>:root{--bg:#0b0a10;--card:#15131d;--ink:#f4f1ea;--muted:#a39db3;--line:#2a2637;--accent:#e2bd6e;--goldgrad:linear-gradient(135deg,#f6dd9a,#d4a547 55%,#b8862d);color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Nunito Sans",system-ui,sans-serif}
+main{max-width:720px;margin:0 auto;padding:20px 16px 48px}a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.logo{font:800 24px "Bricolage Grotesque",system-ui;text-decoration:none;color:var(--ink)}.logo b{background:var(--goldgrad);-webkit-background-clip:text;background-clip:text;color:transparent}
+h1{font:800 clamp(28px,7vw,40px)/1.1 "Bricolage Grotesque",system-ui;margin:8px 0 12px}h2{font:800 22px "Bricolage Grotesque",system-ui;margin:28px 0 12px}
+.lead{color:var(--muted)}.play{display:inline-block;background:var(--goldgrad);color:#17130a;font-weight:800;padding:14px 22px;border-radius:14px;text-decoration:none;margin:8px 0}
+ol{padding-left:22px}li{margin:10px 0}details{color:var(--muted)}summary{cursor:pointer;color:var(--accent);font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:0;list-style:none}.chips li{margin:0}.chips a{display:block;background:var(--card);border:1px solid var(--line);border-radius:99px;padding:6px 12px;text-decoration:none;color:var(--ink);font-weight:700;font-size:15px}
+footer{margin-top:36px;color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding-top:12px}footer p{margin:6px 0}
+h3{font-size:18px;margin:18px 0 6px}.crumbs{font-size:14px;color:var(--muted)}.crumbs a{text-decoration:none}
+.cards{display:grid;gap:12px;padding:0;list-style:none}.cards li{margin:0}.cards a{display:block;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;text-decoration:none;color:var(--ink)}.cards b{font-size:18px}.cards small{display:block;color:var(--muted)}
+form{display:grid;gap:10px}input,textarea{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}textarea{min-height:140px}button{font:inherit;font-weight:800;border:0;border-radius:14px;padding:14px;background:var(--goldgrad);color:#17130a;cursor:pointer}
+.note{color:var(--muted);font-size:15px}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9506500644223987" crossorigin="anonymous"></script>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c26abd6fbc144c2c9333e77a7b090778"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body><main>
+<div class="top"><a class="logo" href="https://quizzmatch.com/">Quizz<b>Match</b></a><a href="https://quizzmatch.com/en/contact/">🇬🇧 English</a></div>
+<h1>Contact</h1>
+<p class="lead">Une erreur dans une question, une idée de nouveau quiz, une remarque sur le site ? Écris-nous, chaque message est lu.</p>
+<form id="cf"><input name="nom" maxlength="60" placeholder="Ton prénom ou pseudo (facultatif)" aria-label="Prénom ou pseudo"><input name="contact" maxlength="120" placeholder="Ton e-mail, si tu veux une réponse (facultatif)" aria-label="E-mail" type="email"><textarea name="message" required minlength="5" maxlength="2000" placeholder="Ton message" aria-label="Message"></textarea><button type="submit">Envoyer</button><p class="note" id="cfm" role="status"></p></form>
+<p class="note">Pour signaler une erreur, indique le nom du quiz et la question concernée. Les informations envoyées servent uniquement à te répondre (voir la <a href="https://quizzmatch.com/confidentialite/">politique de confidentialité</a>).</p>
+<script>
+document.getElementById('cf').addEventListener('submit', async e => {
+  e.preventDefault(); const f = e.target, m = document.getElementById('cfm'), b = f.querySelector('button'); b.disabled = true;
+  const d = { nom: f.nom.value.trim() || null, contact: f.contact.value.trim() || null, message: f.message.value.trim() };
+  try { const r = await fetch('https://ctgjnpxdaqdnrcxjwnkp.supabase.co/rest/v1/messages', { method: 'POST', headers: { apikey: 'sb_publishable_mz--wiLicR1GMDd2b3Fd2g_ewLTbr9h', 'Content-Type': 'application/json', Prefer: 'return=minimal' }, body: JSON.stringify(d) });
+    if (!r.ok) throw 0; f.reset(); m.textContent = "Merci, ton message est bien envoyé."; } catch (_) { m.textContent = "L'envoi n'a pas marché. Réessaie dans un instant."; }
+  b.disabled = false;
+});
+</script>
+<footer><p><a href="https://quizzmatch.com/a-propos/">À propos</a> · <a href="https://quizzmatch.com/contact/">Contact</a> · <a href="https://quizzmatch.com/confidentialite/">Confidentialité</a> · <a href="https://quizzmatch.com/mentions-legales/">Mentions légales</a></p><p>© 2026 QuizzMatch · Quiz gratuits en français et en anglais · <a href="https://quizzmatch.com/">Accueil</a></p></footer>
+</main></body>
+</html>
